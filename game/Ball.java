@@ -143,7 +143,8 @@ public class Ball {
 
                     PVector f = new PVector(deltaX, deltaY).setMag(0.5f);
 
-                    vel.add(f).div(1.5f);
+                    //vel.add(f).div(1.5f);
+                    applyForce(f.div(1.5f));
                     radius = PApplet.map(d, 0, s.attractionR, rad/1.5f, rad); // for '3D' effect when sliding down the hole (maps ball radius acording to dist frmo hole center
 
 

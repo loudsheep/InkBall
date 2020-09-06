@@ -1,5 +1,6 @@
 package app;
 
+import game.Ball;
 import game.Grid;
 import processing.core.PApplet;
 import reader.MapFromFile;
@@ -173,9 +174,17 @@ public class App extends PApplet {
     public void draw() {
         background(220);
         translate(0, panelHeight);
-        if (!gameStarted) {
 
-        } else {
+        if (gameStarted) {
+            noFill();
+            stroke(0);
+            rect(0, -panelHeight, width / 6f, panelHeight);
+
+            fill(0);
+            textSize(panelHeight/2f);
+            //textAlign(CENTER);
+            text(game.waiting.size() + " balls left", 10, -panelHeight/3f);
+
             game.update(mouseX, mouseY - panelHeight, pmouseX, pmouseY - panelHeight);
             game.show();
 
@@ -183,10 +192,10 @@ public class App extends PApplet {
                 next();
             }
 
-
-//            if (mousePressed) {
-//                reset.checkForAction(mouseX, mouseY - panelHeight);
-//                next.checkForAction(mouseX, mouseY - panelHeight);
+//            if (game.waiting.size() != 0) {
+//                for (int i = 0; i < game.waiting.size(); i++){
+//                    game.waiting.
+//                }
 //            }
 
         }
@@ -197,10 +206,6 @@ public class App extends PApplet {
         start.show();
         prev.show();
 
-
-//        if (mousePressed) {
-//            exit.checkForAction(mouseX, mouseY - panelHeight);
-//        }
 
         text(frameRate, 10, 10);
 

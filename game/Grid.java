@@ -230,6 +230,7 @@ public class Grid {
         }
         lh.show();
 
+        sketch.textSize(w/squaresX/3);
         sketch.text(gameFrame, 20,20);
     }
 

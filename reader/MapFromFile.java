@@ -55,8 +55,8 @@ public class MapFromFile {
         float sizeX = w / (float) dimX;
         float sizeY = h / (float) dimY;
 
-        int ballSize = Integer.parseInt(lines.get(1).split("-")[1]);
-        line++;
+        int ballSize = (int)(w / (float)dimX /2)-2;
+        //line++;
 
 
         //System.out.println(ballSize);
@@ -67,7 +67,7 @@ public class MapFromFile {
 
         Square.HoleType color;
 
-        for (int i = 2; i < dimX + 2; i++) {
+        for (int i = 1; i < dimX + 1; i++) {
 
             String[] lineSetting = lines.get(i).split(",");
 
