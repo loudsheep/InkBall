@@ -20,7 +20,7 @@ public class Base extends PApplet {
 //        grid.addBall(this, 3, 9, 0, 0, 255);
 //        grid.addBall(this, 1, 1, new PVector(5, 0), 3, 9, 255, 111, 0);
 
-        MapFromFile m = new MapFromFile("levels/level2.map", width, height);
+        MapFromFile m = new MapFromFile("levels/level1.map", width, height);
         grid = m.generate();
         grid.setAll(this);
         //grid.addBall(this, 3, 18, 0, 0, 255);

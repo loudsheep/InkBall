@@ -13,7 +13,7 @@ public class Ball {
     private float speed;        // ball speed
     private float radius;       // ball radius
     private final float rad;    // const for init radius (see collide method)
-    private float r, g, b;      // color r, color g, color b
+    public final float r, g, b;      // color r, color g, color b
 
     public Ball(PApplet sketch, float posX, float posY, float speed, float radius, float r, float g, float b) { // contructor
         this.sketch = sketch;
@@ -145,7 +145,7 @@ public class Ball {
 
                     //vel.add(f).div(1.5f);
                     applyForce(f.div(1.5f));
-                    radius = PApplet.map(d, 0, s.attractionR, rad/1.5f, rad); // for '3D' effect when sliding down the hole (maps ball radius acording to dist frmo hole center
+                    radius = PApplet.map(d, 0, s.attractionR, rad / 1.5f, rad); // for '3D' effect when sliding down the hole (maps ball radius acording to dist frmo hole center
 
 
                     return;

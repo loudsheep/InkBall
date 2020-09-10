@@ -111,7 +111,7 @@ public class App extends PApplet {
 
     boolean gameStarted = false;
 
-    int level = 1;
+    int level = 0;
 
     public void settings() {
         panelHeight = w / 20;
@@ -145,7 +145,7 @@ public class App extends PApplet {
             game = file.generate();
             game.setAll(this);
 
-            reset = new Button(this, "Restart", height / 60, width - (width / game.getSquaresX() * 4), -panelHeight, width / game.getSquaresX() * 2, panelHeight);
+            reset = new Button(this, "Restart", height / 60, width - (width/8 * 2), -panelHeight, width/8, panelHeight);
             reset.setStrokeColor(new Color(0, 0, 0));
             reset.setFillColor(new Color(255, 255, 255));
             reset.setTextColor(new Color(0, 0, 0));
@@ -153,14 +153,14 @@ public class App extends PApplet {
             reset.setActive(false);
 
 
-            next = new Button(this, "Next level", height / 60, width - (width / game.getSquaresX() * 7), -panelHeight, width / game.getSquaresX() * 3, panelHeight);
+            next = new Button(this, "Next level", height / 60, width - (width/8 * 3), -panelHeight, width/8, panelHeight);
             next.setStrokeColor(new Color(0, 0, 0));
             next.setFillColor(new Color(255, 255, 255));
             next.setTextColor(new Color(0, 0, 0));
             next.setAction(this::next);
             next.setActive(false);
 
-            prev = new Button(this, "Previous level", height / 60, width - (width / game.getSquaresX() * 10), -panelHeight, width / game.getSquaresX() * 3, panelHeight);
+            prev = new Button(this, "Previous level", height / 60, width - (width/8 * 4), -panelHeight, width/8, panelHeight);
             prev.setStrokeColor(new Color(0, 0, 0));
             prev.setFillColor(new Color(255, 255, 255));
             prev.setTextColor(new Color(0, 0, 0));
@@ -180,10 +180,52 @@ public class App extends PApplet {
             stroke(0);
             rect(0, -panelHeight, width / 6f, panelHeight);
 
-            fill(0);
-            textSize(panelHeight/2f);
-            //textAlign(CENTER);
-            text(game.waiting.size() + " balls left", 10, -panelHeight/3f);
+//            fill(0);
+//            textSize(panelHeight/2f);
+//            //textAlign(CENTER);
+//            text(game.waiting.size() + " balls left", 10, -panelHeight/3f);
+
+            if (game.waiting.size() != 0) {
+                int i = 1;
+//                Set<Entry<Ball, Integer>> entries = game.waiting.entrySet();
+//
+//                TreeMap<Ball, Integer> sorted = new TreeMap<>(game.waiting);
+//                Set<Entry<Ball, Integer>> mappings = sorted.entrySet();
+//
+//                List<Entry<Ball, Integer>> listOfEntries = new ArrayList<>(entries);
+//
+//                Collections.sort(listOfEntries, new Comparator<Entry<Ball, Integer>>() {
+//                    @Override
+//                    public int compare(Entry<Ball, Integer> o1, Entry<Ball, Integer> o2) {
+//                        return o1.getValue().compareTo(o2.getValue());
+//                    }
+//                });
+//
+//                LinkedHashMap<Ball, Integer> sortedByValue = new LinkedHashMap<>(listOfEntries.size());
+//
+//                for(Entry<Ball, Integer> entry: listOfEntries) {
+//                    sortedByValue.put(entry.getKey(),entry.getValue());
+//                }
+
+
+                for (Ball b : game.waiting.keySet()) {
+
+
+                    int y = -panelHeight / 2;
+                    int r = panelHeight / 2 - 1;
+
+                    int x = (r + 2) * i;
+
+                    noStroke();
+                    fill(b.r, b.g, b.b);
+
+                    ellipse(x, y, r, r);
+
+
+                    i++;
+
+                }
+            }
 
             game.update(mouseX, mouseY - panelHeight, pmouseX, pmouseY - panelHeight);
             game.show();
@@ -237,7 +279,7 @@ public class App extends PApplet {
         gameStarted = true;
 
         start.setActive(false);
-        exit = new Button(this, "Quit", height / 60, width - (width / game.getSquaresX() * 2), -panelHeight, width / game.getSquaresX() * 2, panelHeight);
+        exit = new Button(this, "Quit", height / 60, width - width/8, -panelHeight, width/8, panelHeight);
         exit.setAction(this::end);
 
         reset.setActive(true);

@@ -55,7 +55,7 @@ public class MapFromFile {
         float sizeX = w / (float) dimX;
         float sizeY = h / (float) dimY;
 
-        int ballSize = (int)(w / (float)dimX /2)-2;
+        int ballSize = (int) (w / (float) dimX / 2) - 2;
         //line++;
 
 
@@ -122,7 +122,7 @@ public class MapFromFile {
 
             HashMap<String, int[]> colors = new HashMap<>();
             colors.put("red", new int[]{255, 0, 0});
-            colors.put("green", new int[]{0, 255, 0});
+            colors.put("green", new int[]{13, 110, 0});
             colors.put("blue", new int[]{0, 0, 255});
             colors.put("orange", new int[]{255, 111, 0});
             colors.put("yellow", new int[]{255, 255, 0});
@@ -134,26 +134,77 @@ public class MapFromFile {
 
                 if (lineSetting[0].equals("static")) { // static ball in file
 
-                    int speed, px, py, velX, velY;
+                    int speed = 4;
+                    int px = 1;
+                    int py = 1;
+                    int velX = 1;
+                    int velY = 1;
+                    int[] c = colors.get("blue");
 
-                    speed = Integer.parseInt(lineSetting[1].split("-")[1]);
-                    px = Integer.parseInt(lineSetting[2].split("-")[1]);
-                    py = Integer.parseInt(lineSetting[3].split("-")[1]);
-                    velX = Integer.parseInt(lineSetting[4].split("-")[1]);
-                    velY = Integer.parseInt(lineSetting[5].split("-")[1]);
-                    int[] c = colors.get(lineSetting[6].split("-")[1]);
+                    for (int i = 1; i < lineSetting.length; i++) {
+
+                        String[] setting = lineSetting[i].split("-");
+
+                        switch (setting[0]) {
+                            case "speed":
+                                speed = Integer.parseInt(setting[1]);
+                                break;
+                            case "posX":
+                                px = Integer.parseInt(setting[1]);
+                                break;
+                            case "posY":
+                                py = Integer.parseInt(setting[1]);
+                                break;
+                            case "velX":
+                                velX = Integer.parseInt(setting[1]);
+                                break;
+                            case "velY":
+                                velY = Integer.parseInt(setting[1]);
+                                break;
+                            case "color":
+                                c = colors.get(setting[1]);
+                                break;
+                        }
+
+                    }
+
+//                    speed = Integer.parseInt(lineSetting[1].split("-")[1]);
+//                    px = Integer.parseInt(lineSetting[2].split("-")[1]);
+//                    py = Integer.parseInt(lineSetting[3].split("-")[1]);
+//                    velX = Integer.parseInt(lineSetting[4].split("-")[1]);
+//                    velY = Integer.parseInt(lineSetting[5].split("-")[1]);
+//                    int[] c = colors.get(lineSetting[6].split("-")[1]);
 
                     gameGrid.addBall(px, py, new PVector(velX, velY), speed, ballSize, c[0], c[1], c[2]);
 
                 } else if (lineSetting[0].equals("dynamic")) { // dynamic ball in file
-                    int speed;
+                    int speed = 4;
+                    int frame = 0;
 
-                    speed = Integer.parseInt(lineSetting[1].split("-")[1]);
+//                    speed = Integer.parseInt(lineSetting[1].split("-")[1]);
 
-                    int[] c = colors.get(lineSetting[2].split("-")[1]);
+                    int[] c = colors.get("red");
+//                    int[] c = colors.get(lineSetting[2].split("-")[1]);
+
+                    for (int i = 1; i < lineSetting.length; i++) {
+                        String[] setting = lineSetting[i].split("-");
+
+                        switch (setting[0]) {
+                            case "speed":
+                                speed = Integer.parseInt(setting[1]);
+                                break;
+                            case "color":
+                                c = colors.get(setting[1]);
+                                break;
+                            case "frame":
+                                frame = Integer.parseInt(setting[1]);
+                                break;
+                        }
+
+                    }
 
                     if (lineSetting.length > 3) {
-                        int frame = Integer.parseInt(lineSetting[3].split("-")[1]);
+
                         gameGrid.addBall(speed, ballSize, c[0], c[1], c[2], frame);
                     } else
                         gameGrid.addBall(speed, ballSize, c[0], c[1], c[2]);

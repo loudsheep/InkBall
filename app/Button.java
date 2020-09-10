@@ -117,7 +117,7 @@ public class Button {
         this.textColor = textColor;
     }
 
-    public Color getClickedColor() {
-        return clickedColor;
+    public void setClickedColor(Color clickedColor) {
+        this.clickedColor = clickedColor;
     }
 }

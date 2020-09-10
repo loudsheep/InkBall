@@ -1,15 +1,20 @@
 package level_maker;
 
-import game.Square;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.event.MouseEvent;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Maker extends PApplet {
 
     public static class Square {
+
+        public void setType(TYPE wall) {
+            this.type = wall;
+        }
 
         public enum TYPE {
             WALL,
@@ -40,7 +45,7 @@ public class Maker extends PApplet {
         private PApplet sketch;
         private PImage img;
         private boolean main_hole;
-        private HoleType hType = null;
+        private HoleType hType = HoleType.BLUE;
 
         public int i, j;
         public int maxI, maxJ;
@@ -266,6 +271,22 @@ public class Maker extends PApplet {
             return posY;
         }
 
+        public void setW(float w) {
+            this.w = w;
+        }
+
+        public void setH(float h) {
+            this.h = h;
+        }
+
+        public void setPosX(float posX) {
+            this.posX = posX;
+        }
+
+        public void setPosY(float posY) {
+            this.posY = posY;
+        }
+
         public void setSketch(PApplet sketch) {
             this.sketch = sketch;
             if (hType != null) {
@@ -280,21 +301,27 @@ public class Maker extends PApplet {
         public void pressed(String mode, ArrayList<Square> sq, String color) {
             if (sketch.mouseX > posX && sketch.mouseX < posX + w && sketch.mouseY > posY && sketch.mouseY < posY + h) {
 
-                if (i == 0 || i == maxI || j == maxJ || j == 0) {
-                    type = Square.TYPE.valueOf("WALL");
-                } else {
+                if (i != 0 && i != maxI && j != maxJ && j != 0) {
 
 //                    if (type == TYPE.HOLE && !main_hole) {
 //                        return;
 //                    }
 
                     if (mode.equals("HOLE")) {
-                        if (type != TYPE.HOLE && !main_hole)
+                        if (type == TYPE.HOLE) {
+
+                            if (hType == null) {
+                                makeHole(sq, color);
+                                return;
+                            }
+                            if (!hType.toString().equals(color.toUpperCase()))
+                                makeHole(sq, color);
+                        } else
                             makeHole(sq, color);
                         return;
                     }
 
-                    type = Square.TYPE.valueOf(mode);
+                    type = TYPE.valueOf(mode);
                     main_hole = false;
                 }
             }
@@ -304,12 +331,14 @@ public class Maker extends PApplet {
 
         public void makeHole(ArrayList<Square> sq, String color) {
             //System.out.println("make hole");
-            if (i > 0 || j > 0 || i < maxI - 1 || j < maxJ - 1) { // we can make hole !!!
+            if (i > 0 || j > 0 || i < maxI - 3 || j < maxJ - 3) { // we can make hole !!!
                 System.out.println("make hole");
 
                 type = TYPE.HOLE;
 
                 main_hole = true;
+
+                hType = HoleType.valueOf(color);
 
                 String name = color.toLowerCase();
 
@@ -414,7 +443,8 @@ public class Maker extends PApplet {
         else if (e.getCount() < 0) size--;
 
 
-        if (size < 6) size = 6;
+        if (size < 8) size = 8;
+        else if(size > 25)size = 25;
 
 
         resize();
@@ -430,31 +460,51 @@ public class Maker extends PApplet {
         sizeY = height / (float) size;
 
         for (int i = 0; i < size; i++) {
+            outer:
             for (int j = 0; j < size; j++) {
 
                 Square.TYPE type = Square.TYPE.FREE;
                 Square.HoleType col = null;
+                boolean main = false;
 
                 for (Square s : rectCopy) {
                     if (s.i == i && s.j == j && s.i != 0 && s.i != s.maxI && s.j != 0 && s.j != s.maxJ) {
                         type = s.getType();
 
-                        if (type == Square.TYPE.HOLE)
+//                        s.setPosX(sizeX * i);
+//                        s.setPosY(sizeX * j);
+//                        s.setW(sizeX);
+//                        s.setH(sizeY);
+//
+//
+//                        if (i == 0 || i == size - 1 || j == 0 || j == size - 1) {
+//                            s.setType(Square.TYPE.WALL);
+//
+//                        }
+//
+//                        rect.add(s);
+//                        continue outer;
+
+                        if (type == Square.TYPE.HOLE) {
                             col = s.gethType();
+                            main = s.main_hole;
+                        }
                     }
                 }
 
 
                 if (i == 0 || i == size - 1 || j == 0 || j == size - 1) {
                     type = Square.TYPE.WALL;
-                    col = null;
+
                 }
 
 
-                if (type == Square.TYPE.HOLE && col != null)
-                    rect.add(new Square(this, sizeX * i, sizeY * j, sizeX, sizeY, i, j, size - 1, size - 1, Square.TYPE.HOLE, true, col));
-                else
+                if (type == Square.TYPE.HOLE && col != null) {
+                    rect.add(new Square(this, sizeX * i, sizeY * j, sizeX, sizeY, i, j, size - 1, size - 1, Square.TYPE.HOLE, main, col));
+                    //System.out.println("hole configured col: "+col);
+                } else {
                     rect.add(new Square(this, sizeX * i, sizeY * j, sizeX, sizeY, type, i, j, size - 1, size - 1));
+                }
 
 
             }
@@ -462,6 +512,65 @@ public class Maker extends PApplet {
 
 //        for(int i=0; i<size; i++) {
 //            for(int j=0; j<)
+//        }
+
+    }
+
+    private void saveFile() {
+
+        int num = Objects.requireNonNull(new File("levels").listFiles()).length;
+
+        System.out.println("num of files in dir: " + num);
+
+        StringBuilder str = new StringBuilder(size + "," + size + "\n");
+
+        for (int i = 0; i < size; i++) {
+
+            int count = 1;
+            Square current = rect.get(i * size);
+            for (int j = 1; j < size; j++) {
+
+                int index = j * size + i;
+
+                if (current.getType() == rect.get(index).getType()) {
+                    count++;
+                } else {
+                    String s = count + "-" + current.getType();
+
+                    if (current.getType() == Square.TYPE.HOLE) {
+                        if (current.main_hole) {
+                            s += "-" + current.gethType();
+                        }
+                    }
+
+                    s += ",";
+
+                    str.append(s);
+                    current = rect.get(index);
+                    count = 1;
+                }
+
+            }
+
+            String s = count + "-" + current.getType() + ",";
+            str.append(s);
+
+
+            str.append("\n");
+        }
+
+        System.out.println(str);
+
+
+//        File file = new File("levels\\level" + num);
+//        try {
+//            Formatter formatter = new Formatter(file);
+//
+//            formatter.format(str.toString());
+//
+//
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
 //        }
 
     }
@@ -481,6 +590,9 @@ public class Maker extends PApplet {
         } else if (keyCode == RIGHT) {
             colorCount++;
             colorCount %= colors.length;
+        } else if (keyCode == ENTER) {
+            saveFile();
+            System.exit(0);
         }
     }
 
