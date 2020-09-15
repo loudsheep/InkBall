@@ -5,10 +5,13 @@ import processing.core.PImage;
 import processing.event.MouseEvent;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
+
 
 public class Maker extends PApplet {
+
+    //public final PImage img = loadImage("img/hole_blue.bmp");
+
 
     public static class Square {
 
@@ -42,7 +45,7 @@ public class Maker extends PApplet {
         private float posY;
         private Square.TYPE type;
 
-        private PApplet sketch;
+        private Maker sketch;
         private PImage img;
         private boolean main_hole;
         private HoleType hType = HoleType.BLUE;
@@ -50,7 +53,7 @@ public class Maker extends PApplet {
         public int i, j;
         public int maxI, maxJ;
 
-        public Square(PApplet sketch, float posX, float posY, float w, float h, Square.TYPE type, int i, int j, int maxI, int maxJ) {
+        public Square(Maker sketch, float posX, float posY, float w, float h, Square.TYPE type, int i, int j, int maxI, int maxJ) {
             this.posX = posX;
             this.posY = posY;
             this.w = w;
@@ -103,7 +106,7 @@ public class Maker extends PApplet {
             this.h = h;
             this.type = type;
 
-            this.sketch = sketch;
+            this.sketch = (Maker) sketch;
 
             main_hole = main;
 
@@ -122,7 +125,7 @@ public class Maker extends PApplet {
 
         }
 
-        public Square(PApplet sketch, float posX, float posY, float w, float h, int i, int j, int maxI, int maxJ, Square.TYPE type, boolean main, Square.HoleType hType) {
+        public Square(Maker sketch, float posX, float posY, float w, float h, int i, int j, int maxI, int maxJ, Square.TYPE type, boolean main, Square.HoleType hType) {
             this.posX = posX;
             this.posY = posY;
             this.w = w;
@@ -148,10 +151,16 @@ public class Maker extends PApplet {
             else if (hType == Square.HoleType.YELLOW) name = "yellow";
             else name = "blue";
 
-            img = sketch.loadImage("img/hole_" + name + ".bmp");
+            //img = sketch.loadImage("img/hole_" + name + ".bmp");
+            setImg(sketch.img.get(name));
+
 
             this.hType = hType;
 
+        }
+
+        public void setImg(PImage img) {
+            this.img = img;
         }
 
         public void show() {
@@ -235,15 +244,15 @@ public class Maker extends PApplet {
                 sketch.vertex(posX + w / 3, posY + h / 2);
 
                 sketch.endShape();
-            } else {
+            } else if (type == TYPE.HOLE){
 
 
                 if (main_hole) {
                     sketch.stroke(200);
                     sketch.fill(220);
                     sketch.strokeWeight(2);
-                    sketch.rect(posX, posY, w, h);
-                    sketch.image(img, posX + 1, posY + 1, w - 1, h - 1);
+                    sketch.rect(posX, posY, w * 3, h * 3);
+                    sketch.image(img, posX + 1, posY + 1, w * 3 - 1, h * 3 - 1);
                 }
 
             }
@@ -287,11 +296,15 @@ public class Maker extends PApplet {
             this.posY = posY;
         }
 
-        public void setSketch(PApplet sketch) {
+        public void setSketch(Maker sketch) {
             this.sketch = sketch;
             if (hType != null) {
                 img = sketch.loadImage("img/hole_" + hType + ".bmp");
             }
+        }
+
+        public void sethType(HoleType hType) {
+            this.hType = hType;
         }
 
         public HoleType gethType() {
@@ -321,8 +334,39 @@ public class Maker extends PApplet {
                         return;
                     }
 
+                    if(type == TYPE.HOLE) {
+                        System.out.println("holelelele");
+                        if(main_hole) {
+                            antiMakeHole(sq);
+                            type = TYPE.valueOf(mode);
+                            main_hole = false;
+
+                        }
+
+                        return;
+                    }
+
                     type = TYPE.valueOf(mode);
                     main_hole = false;
+                }
+            }
+        }
+
+        public void antiMakeHole(ArrayList<Square> sq) {
+            System.out.println("antmake hole");
+            for (Square s : sq) {
+//                    if(s.i == i) {
+//                        if(s.i == i+1 || s.i == i+2) {
+//                            s.setType(TYPE.HOLE);
+//                            s.main_hole = false;
+//                        }
+//                    }
+                if (s.i < i + 3 && s.j < j + 3) {
+                    if (s.i >= i && s.j >= j) {
+                        s.setType(TYPE.FREE);
+                        s.main_hole = false;
+                        //s.setImg(img);
+                    }
                 }
             }
         }
@@ -331,8 +375,9 @@ public class Maker extends PApplet {
 
         public void makeHole(ArrayList<Square> sq, String color) {
             //System.out.println("make hole");
-            if (i > 0 || j > 0 || i < maxI - 3 || j < maxJ - 3) { // we can make hole !!!
-                System.out.println("make hole");
+            if (i > 0 && j > 0 && i < maxI - 2 && j < maxJ - 2) { // we can make hole !!!
+                System.out.println("make hole || " + i + "-" + j + " || " + maxI + "-" + maxJ);
+//                System.out.println("make hole");
 
                 type = TYPE.HOLE;
 
@@ -342,12 +387,31 @@ public class Maker extends PApplet {
 
                 String name = color.toLowerCase();
 
-                img = sketch.loadImage("img/hole_" + name + ".bmp");
+                //img = sketch.loadImage("img/hole_" + name + ".bmp");
+                setImg(sketch.img.get(name));
 
-
-//                for (Square s : sq) {
-//
-//                }
+                for (Square s : sq) {
+                    if(s == this) continue;
+//                    if(s.i == i) {
+//                        if(s.i == i+1 || s.i == i+2) {
+//                            s.setType(TYPE.HOLE);
+//                            s.main_hole = false;
+//                        }
+//                    }
+                    if (s.i < i + 3 && s.j < j + 3) {
+                        if (s.i >= i && s.j >= j) {
+                            if(s.getType() == TYPE.HOLE) {
+                                if(s.main_hole) {
+                                    s.antiMakeHole(sq);
+                                }
+                            }
+                            s.setType(TYPE.HOLE);
+                            s.sethType(HoleType.valueOf(color));
+                            s.main_hole = false;
+                            s.setImg(img);
+                        }
+                    }
+                }
             }
         }
     }
@@ -357,6 +421,15 @@ public class Maker extends PApplet {
     private float sizeX, sizeY;
 
     private ArrayList<Square> rect;
+
+//    PImage blue = null;
+//    PImage green = null;
+//    PImage neutral = null;
+//    PImage orange = null;
+//    PImage red = null;
+//    PImage yellow = null;
+
+    public HashMap<String, PImage> img;
 
     private String[] modes = {"WALL", "ONE_WAY_UP", "ONE_WAY_DOWN", "ONE_WAY_RIGHT", "ONE_WAY_LEFT", "SPAWN", "HOLE"};
     private int modeCount = 0;
@@ -390,6 +463,15 @@ public class Maker extends PApplet {
                 rect.add(new Square(this, sizeX * i, sizeY * j, sizeX, sizeY, type, i, j, size - 1, size - 1));
             }
         }
+
+        img = new HashMap<>();
+
+        img.put("blue", requestImage("img/hole_blue.bmp"));
+        img.put("green", requestImage("img/hole_green.bmp"));
+        img.put("neutral", requestImage("img/hole_neutral.bmp"));
+        img.put("orange", requestImage("img/hole_orange.bmp"));
+        img.put("red", requestImage("img/hole_red.bmp"));
+        img.put("yellow", requestImage("img/hole_yellow.bmp"));
     }
 
     public void draw() {
@@ -444,7 +526,7 @@ public class Maker extends PApplet {
 
 
         if (size < 8) size = 8;
-        else if(size > 25)size = 25;
+        else if (size > 25) size = 25;
 
 
         resize();
@@ -532,12 +614,13 @@ public class Maker extends PApplet {
 
                 int index = j * size + i;
 
-                if (current.getType() == rect.get(index).getType()) {
+                if (current.getType() == rect.get(index).getType() && current.gethType() == rect.get(index).gethType() && current.main_hole == rect.get(index).main_hole) {
                     count++;
                 } else {
                     String s = count + "-" + current.getType();
 
                     if (current.getType() == Square.TYPE.HOLE) {
+                        System.out.println("hole making ---- main: " + current.main_hole + " --------- " + current.gethType());
                         if (current.main_hole) {
                             s += "-" + current.gethType();
                         }

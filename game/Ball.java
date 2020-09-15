@@ -7,15 +7,26 @@ import java.util.ArrayList;
 
 public class Ball {
 
+    public enum COLOR {
+        BLUE,
+        GREEN,
+        ORANGE,
+        RED,
+        YELLOW
+    }
+
+    private final int colorFactor = 10;
+
     private PApplet sketch;     // drawing windows reference
     private PVector pos;        // position vector
     private PVector vel;        // velocity vector
     private float speed;        // ball speed
     private float radius;       // ball radius
     private final float rad;    // const for init radius (see collide method)
-    public final float r, g, b;      // color r, color g, color b
+    public float r, g, b;      // color r, color g, color b
+    public COLOR color;
 
-    public Ball(PApplet sketch, float posX, float posY, float speed, float radius, float r, float g, float b) { // contructor
+    public Ball(PApplet sketch, float posX, float posY, float speed, float radius, COLOR c) { // contructor
         this.sketch = sketch;
         this.pos = new PVector(posX, posY);
         this.vel = PVector.random2D().setMag(speed);
@@ -23,12 +34,13 @@ public class Ball {
         this.radius = radius;
         rad = radius;
 
-        this.r = r;
-        this.g = g;
-        this.b = b;
+//        this.r = r;
+//        this.g = g;
+//        this.b = b;
+        color = c;
     }
 
-    public Ball(PApplet sketch, float posX, float posY, PVector initVel, float speed, float radius, float r, float g, float b) { // constructor
+    public Ball(PApplet sketch, float posX, float posY, PVector initVel, float speed, float radius, COLOR c) { // constructor
         this.sketch = sketch;
         this.pos = new PVector(posX, posY);
         this.vel = initVel;
@@ -37,24 +49,26 @@ public class Ball {
         this.radius = radius;
         rad = radius;
 
-        this.r = r;
-        this.g = g;
-        this.b = b;
+//        this.r = r;
+//        this.g = g;
+//        this.b = b;
+        color = c;
     }
 
-    public Ball(float posX, float posY, float speed, float radius, float r, float g, float b) { // constructor
+    public Ball(float posX, float posY, float speed, float radius, COLOR c) { // constructor
         this.pos = new PVector(posX, posY);
         this.vel = PVector.random2D().setMag(speed);
         this.speed = speed;
         this.radius = radius;
         rad = radius;
 
-        this.r = r;
-        this.g = g;
-        this.b = b;
+//        this.r = r;
+//        this.g = g;
+//        this.b = b;
+        color = c;
     }
 
-    public Ball(float posX, float posY, PVector initVel, float speed, float radius, float r, float g, float b) { // constructor
+    public Ball(float posX, float posY, PVector initVel, float speed, float radius, COLOR c) { // constructor
         this.pos = new PVector(posX, posY);
         this.vel = initVel;
         this.vel.setMag(speed);
@@ -62,9 +76,11 @@ public class Ball {
         this.radius = radius;
         rad = radius;
 
-        this.r = r;
-        this.g = g;
-        this.b = b;
+//        this.r = r;
+//        this.g = g;
+//        this.b = b;
+
+        color = c;
     }
 
     public void setSketch(PApplet sketch) { // set windows reference
@@ -298,7 +314,25 @@ public class Ball {
 
     public void show() { // show ball on screen
         sketch.noStroke();
-        sketch.fill(r, g, b);
+        //sketch.fill(r, g, b);
+
+        switch (color) {
+            case RED:
+                sketch.fill(235-colorFactor, 28-colorFactor, 38-colorFactor);
+                break;
+            case BLUE:
+                sketch.fill(63-colorFactor, 72-colorFactor, 204-colorFactor);
+                break;
+            case GREEN:
+                sketch.fill(34-colorFactor, 177-colorFactor, 76-colorFactor);
+                break;
+            case ORANGE:
+                sketch.fill(255-colorFactor, 127-colorFactor, 39-colorFactor);
+                break;
+            case YELLOW:
+                sketch.fill(255-colorFactor, 242-colorFactor, 0-colorFactor);
+                break;
+        }
 
         sketch.ellipse(pos.x, pos.y, radius * 2, radius * 2);
     }

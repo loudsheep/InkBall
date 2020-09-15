@@ -230,30 +230,30 @@ public class Grid {
         }
         lh.show();
 
-        sketch.textSize(w/squaresX/3);
-        sketch.text(gameFrame, 20,20);
+        sketch.textSize(w / squaresX / 3);
+        sketch.text(gameFrame, 20, 20);
     }
 
-    public void addBall(PApplet sketch, float speed, float radius, float r, float g, float b) {
+//    public void addBall(PApplet sketch, float speed, float radius, float r, float g, float b) {
+//
+//        ArrayList<Square> spawners = new ArrayList<>();
+//
+//        for (Square s : grid) {
+//            if (s.getType() == Square.TYPE.SPAWN) spawners.add(s);
+//        }
+//
+//        if (spawners.size() == 0) return;
+//
+//        Square rand = spawners.get((int) sketch.random(spawners.size()));
+//
+//        balls.add(new Ball(sketch, rand.getPosX() + rand.getW() / 2f, rand.getPosY() + rand.getH() / 2f, speed, radius, r, g, b));
+//    }
 
-        ArrayList<Square> spawners = new ArrayList<>();
-
-        for (Square s : grid) {
-            if (s.getType() == Square.TYPE.SPAWN) spawners.add(s);
-        }
-
-        if (spawners.size() == 0) return;
-
-        Square rand = spawners.get((int) sketch.random(spawners.size()));
-
-        balls.add(new Ball(sketch, rand.getPosX() + rand.getW() / 2f, rand.getPosY() + rand.getH() / 2f, speed, radius, r, g, b));
+    public void addBall(float speed, float radius, Ball.COLOR c) {
+        addBall(speed, radius, c, 10);
     }
 
-    public void addBall(float speed, float radius, float r, float g, float b) {
-        addBall(speed, radius, r, g, b, 10);
-    }
-
-    public void addBall(float speed, float radius, float r, float g, float b, int frame) {
+    public void addBall(float speed, float radius, Ball.COLOR c, int frame) {
 
         ArrayList<Square> spawners = new ArrayList<>();
 
@@ -265,22 +265,22 @@ public class Grid {
 
         Square rand = spawners.get((int) (Math.random() * spawners.size()));
 
-        waiting.put(new Ball(rand.getPosX() + rand.getW() / 2f, rand.getPosY() + rand.getH() / 2f, speed, radius, r, g, b), frame);
+        waiting.put(new Ball(rand.getPosX() + rand.getW() / 2f, rand.getPosY() + rand.getH() / 2f, speed, radius, c), frame);
     }
 
-    public void addBall(PApplet sketch, float posX, float posY, PVector initVel, float speed, float radius, float r, float g, float b) {
-        int index = (int) (posY * squaresX + posX);
-        float px, py;
+//    public void addBall(PApplet sketch, float posX, float posY, PVector initVel, float speed, float radius, float r, float g, float b) {
+//        int index = (int) (posY * squaresX + posX);
+//        float px, py;
+//
+//        Square s = grid.get(index);
+//
+//        px = s.getPosX() + s.getW() / 2;
+//        py = s.getPosY() + s.getH() / 2;
+//
+//        balls.add(new Ball(sketch, px, py, initVel, speed, radius, r, g, b));
+//    }
 
-        Square s = grid.get(index);
-
-        px = s.getPosX() + s.getW() / 2;
-        py = s.getPosY() + s.getH() / 2;
-
-        balls.add(new Ball(sketch, px, py, initVel, speed, radius, r, g, b));
-    }
-
-    public void addBall(float posX, float posY, PVector initVel, float speed, float radius, float r, float g, float b) {
+    public void addBall(float posX, float posY, PVector initVel, float speed, float radius, Ball.COLOR c) {
         int index = (int) (posY * squaresX + posX);
         float px, py;
 
@@ -290,7 +290,7 @@ public class Grid {
         px = s.getPosX() + s.getW() / 2;
         py = s.getPosY() + s.getH() / 2;
 
-        balls.add(new Ball(px, py, initVel, speed, radius, r, g, b));
+        balls.add(new Ball(px, py, initVel, speed, radius, c));
     }
 
     public int getSquaresX() {

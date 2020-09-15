@@ -98,16 +98,17 @@ public class App extends PApplet {
 //    }
 
 
+    int w = 600;
+    int panelHeight;
+
     Button start;
     Button exit;
-    Button reset;
-    Button next, prev;
+    Button reset;// = new Button(this, "Restart", height / 60, width - (width/8 * 2), -panelHeight, width/8, panelHeight);;
+    Button next;// = new Button(this, "Next level", height / 60, width - (width/8 * 3), -panelHeight, width/8, panelHeight);;
+    Button prev;// = new Button(this, "Previous level", height / 60, width - (width/8 * 4), -panelHeight, width/8, panelHeight);;
 
     Grid game;
 
-    int w = 600;
-
-    int panelHeight;
 
     boolean gameStarted = false;
 
@@ -137,6 +138,11 @@ public class App extends PApplet {
         exit.setAction(this::end);
 
         File f = new File("levels/level" + level + ".map");
+
+//        while(!f.exists()) {
+//            level
+//            f = new File("levels/level" + level + ".map");
+//        }
 
         if (f.exists() && !f.isDirectory()) {
 
@@ -174,6 +180,8 @@ public class App extends PApplet {
     public void draw() {
         background(220);
         translate(0, panelHeight);
+
+        //if(game == null)return;
 
         if (gameStarted) {
             noFill();
@@ -301,8 +309,8 @@ public class App extends PApplet {
 
             game = file.generate();
             game.setAll(this);
-        } else if (level <= 0) {
-            while (level != 1) level++;
+        } else if (level < 0) {
+            while (level != 0) level++;
         } else {
             level--;
         }

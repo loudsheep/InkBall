@@ -1,5 +1,7 @@
 package reader;
 
+import game.Ball;
+import game.Ball.COLOR;
 import game.Grid;
 import game.Square;
 import processing.core.PVector;
@@ -120,12 +122,12 @@ public class MapFromFile {
 
         if (line < lines.size()) { // there are some ball-config in file
 
-            HashMap<String, int[]> colors = new HashMap<>();
-            colors.put("red", new int[]{255, 0, 0});
-            colors.put("green", new int[]{13, 110, 0});
-            colors.put("blue", new int[]{0, 0, 255});
-            colors.put("orange", new int[]{255, 111, 0});
-            colors.put("yellow", new int[]{255, 255, 0});
+            HashMap<String, COLOR> colors = new HashMap<>();
+            colors.put("red", COLOR.RED);
+            colors.put("green", COLOR.GREEN);
+            colors.put("blue", COLOR.BLUE);
+            colors.put("orange", COLOR.ORANGE);
+            colors.put("yellow", COLOR.YELLOW);
 
             for (; line < lines.size(); line++) {
                 //System.out.println(line + " -<<<<<<<<<<");
@@ -139,7 +141,7 @@ public class MapFromFile {
                     int py = 1;
                     int velX = 1;
                     int velY = 1;
-                    int[] c = colors.get("blue");
+                    COLOR c = colors.get("blue");
 
                     for (int i = 1; i < lineSetting.length; i++) {
 
@@ -175,7 +177,7 @@ public class MapFromFile {
 //                    velY = Integer.parseInt(lineSetting[5].split("-")[1]);
 //                    int[] c = colors.get(lineSetting[6].split("-")[1]);
 
-                    gameGrid.addBall(px, py, new PVector(velX, velY), speed, ballSize, c[0], c[1], c[2]);
+                    gameGrid.addBall(px, py, new PVector(velX, velY), speed, ballSize, c);
 
                 } else if (lineSetting[0].equals("dynamic")) { // dynamic ball in file
                     int speed = 4;
@@ -183,7 +185,7 @@ public class MapFromFile {
 
 //                    speed = Integer.parseInt(lineSetting[1].split("-")[1]);
 
-                    int[] c = colors.get("red");
+                    COLOR c = colors.get("red");
 //                    int[] c = colors.get(lineSetting[2].split("-")[1]);
 
                     for (int i = 1; i < lineSetting.length; i++) {
@@ -205,15 +207,15 @@ public class MapFromFile {
 
                     if (lineSetting.length > 3) {
 
-                        gameGrid.addBall(speed, ballSize, c[0], c[1], c[2], frame);
+                        gameGrid.addBall(speed, ballSize, c, frame);
                     } else
-                        gameGrid.addBall(speed, ballSize, c[0], c[1], c[2]);
+                        gameGrid.addBall(speed, ballSize, c);
                 }
             }
 
         } else { // there are no ball-config in file 
 
-            gameGrid.addBall(4, ballSize, 0, 0, 255);
+            gameGrid.addBall(4, ballSize, COLOR.BLUE);
         }
 
 
