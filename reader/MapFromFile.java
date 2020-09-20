@@ -1,5 +1,6 @@
 package reader;
 
+import app.App;
 import game.Ball;
 import game.Ball.COLOR;
 import game.Grid;
@@ -8,6 +9,7 @@ import processing.core.PVector;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -20,6 +22,9 @@ public class MapFromFile {
     public MapFromFile(String path, int w, int h) {
         file = new File(path);
 
+        //file = App.class.getResourceAsStream("jetbrains://idea/navigate/reference?project=InkBall&path=levels/level0.map");
+        //System.out.println(file);
+
         this.w = w;
         this.h = h;
     }
@@ -28,13 +33,12 @@ public class MapFromFile {
 
         int line = 0;
 
-        Scanner sc;
+        Scanner sc = null;
 
         try {
             sc = new Scanner(file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            return null;
         }
 
         ArrayList<String> lines = new ArrayList<>();

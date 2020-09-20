@@ -135,8 +135,9 @@ public class Ball {
 
             /*
                 check collision with 'one way' blocks
-                !!! have to be improved (wierd things happen when inside that block and having opposite velocity ( for example 'one way up' block and velocity pointing down) !!!
+                !!! have to be improved (weird things happen when inside that block and having opposite velocity ( for example 'one way up' block and velocity pointing down) !!!
              */
+
             if (s.getType() == Square.TYPE.ONE_WAY_DOWN && vel.y > 0) continue;
             if (s.getType() == Square.TYPE.ONE_WAY_UP && vel.y < 0) continue;
             if (s.getType() == Square.TYPE.ONE_WAY_RIGHT && vel.x > 0) continue;
@@ -150,14 +151,23 @@ public class Ball {
                 if (d < s.attractionR) { // ball inside hole
 
                     if (d < s.attractionR / 3) { // when too close delete this ball
-                        s.del(this);
+
+                        if (s.getHType().toString() == color.toString()) {
+                            s.del(this);
+                        } else {
+                            if (s.getHType() == Square.HoleType.NEUTRAL) {
+                                s.del(this);
+                            } else {
+                                s.wrongHole(this);
+                            }
+                        }
                         return;
                     }
 
                     float deltaX = s.getPosX() + s.getW() / 2 - pos.x;
                     float deltaY = s.getPosY() + s.getH() / 2 - pos.y;
 
-                    PVector f = new PVector(deltaX, deltaY).setMag(0.5f);
+                    PVector f = new PVector(deltaX, deltaY).setMag(PApplet.map(d, 0, s.attractionR, 1.5f, 0.5f));
 
                     //vel.add(f).div(1.5f);
                     applyForce(f.div(1.5f));
@@ -173,37 +183,59 @@ public class Ball {
             }
 
 
-            if (pos.y + radius >= s.getPosY() && pos.y < s.getPosY() + s.getH() && pos.x >= s.getPosX() && pos.x <= s.getPosX() + s.getW()) { // up side collision
-                vel.y = -vel.y;
-                pos.y = s.getPosY() - radius;
+            if (sideCollision(s)) return;
 
-                return;
-            }
-
-            if (pos.y - radius <= s.getPosY() + s.getH() && pos.y > s.getPosY() && pos.x >= s.getPosX() && pos.x <= s.getPosX() + s.getW()) { // down side collision
-                vel.y = -vel.y;
-                pos.y = s.getPosY() + s.getH() + radius;
-
-                return;
-            }
-
-            if (pos.x + radius >= s.getPosX() && pos.x < s.getPosX() + s.getW() && pos.y >= s.getPosY() && pos.y <= s.getPosY() + s.getH()) { // left side collision
-                vel.x = -vel.x;
-                pos.x = s.getPosX() - radius;
-
-                return;
-            }
-
-            if (pos.x - radius <= s.getPosX() + s.getW() && pos.x > s.getPosX() && pos.y >= s.getPosY() && pos.y <= s.getPosY() + s.getH()) { // right side collision
-                vel.x = -vel.x;
-                pos.x = s.getPosX() + s.getW() + radius;
-
-                return;
-            }
+            if (edgeCollision(s)) return;
 
 
-            float nearestX = PApplet.max(s.getPosX(), PApplet.min(pos.x, s.getPosX() + s.getW()));
-            float nearestY = PApplet.max(s.getPosY(), PApplet.min(pos.y, s.getPosY() + s.getH()));
+        }
+    }
+
+    private boolean sideCollision(Square s) {
+        if (pos.y + radius >= s.getPosY() && pos.y < s.getPosY() + s.getH() && pos.x >= s.getPosX() && pos.x <= s.getPosX() + s.getW()) { // up side collision
+            vel.y = -vel.y;
+            pos.y = s.getPosY() - radius;
+
+            return true;
+        }
+
+        if (pos.y - radius <= s.getPosY() + s.getH() && pos.y > s.getPosY() && pos.x >= s.getPosX() && pos.x <= s.getPosX() + s.getW()) { // down side collision
+            vel.y = -vel.y;
+            pos.y = s.getPosY() + s.getH() + radius;
+
+            return true;
+        }
+
+        if (pos.x + radius >= s.getPosX() && pos.x < s.getPosX() + s.getW() && pos.y >= s.getPosY() && pos.y <= s.getPosY() + s.getH()) { // left side collision
+            vel.x = -vel.x;
+            pos.x = s.getPosX() - radius;
+
+            return true;
+        }
+
+        if (pos.x - radius <= s.getPosX() + s.getW() && pos.x > s.getPosX() && pos.y >= s.getPosY() && pos.y <= s.getPosY() + s.getH()) { // right side collision
+            vel.x = -vel.x;
+            pos.x = s.getPosX() + s.getW() + radius;
+
+            return true;
+        }
+
+
+        return false;
+    }
+
+    private boolean edgeCollision(Square s) {
+        float nearestX = PApplet.max(s.getPosX(), PApplet.min(pos.x, s.getPosX() + s.getW()));
+        float nearestY = PApplet.max(s.getPosY(), PApplet.min(pos.y, s.getPosY() + s.getH()));
+
+        boolean b1 = nearestX == s.getPosX() && nearestY == s.getPosY();
+        boolean b2 = nearestX == s.getPosX() && nearestY == s.getPosY() + s.getH();
+        boolean b3 = nearestX == s.getPosX() + s.getW() && nearestY == s.getPosY();
+        boolean b4 = nearestX == s.getPosX() + s.getW() && nearestY == s.getPosY() + s.getH();
+
+        //if(nearestX == s.getPosX() && nearestY == s.getPosY())
+
+        if (b1 || b2 || b3 || b4) {
 
 
             PVector dist = new PVector(pos.x - nearestX, pos.y - nearestY);
@@ -229,10 +261,13 @@ public class Ball {
                     dist = new PVector(pos.x - nearestX, pos.y - nearestY);
                 }
 
-                return;
+                return true;
             }
-
         }
+
+        return sideCollision(s);
+
+        //return false;
     }
 
     public void move() { // moves ball
@@ -318,23 +353,34 @@ public class Ball {
 
         switch (color) {
             case RED:
-                sketch.fill(235-colorFactor, 28-colorFactor, 38-colorFactor);
+                sketch.fill(235 - colorFactor, 28 - colorFactor, 38 - colorFactor);
                 break;
             case BLUE:
-                sketch.fill(63-colorFactor, 72-colorFactor, 204-colorFactor);
+                sketch.fill(63 - colorFactor, 72 - colorFactor, 204 - colorFactor);
                 break;
             case GREEN:
-                sketch.fill(34-colorFactor, 177-colorFactor, 76-colorFactor);
+                sketch.fill(34 - colorFactor, 177 - colorFactor, 76 - colorFactor);
                 break;
             case ORANGE:
-                sketch.fill(255-colorFactor, 127-colorFactor, 39-colorFactor);
+                sketch.fill(255 - colorFactor, 127 - colorFactor, 39 - colorFactor);
                 break;
             case YELLOW:
-                sketch.fill(255-colorFactor, 242-colorFactor, 0-colorFactor);
+                sketch.fill(255 - colorFactor, 242 - colorFactor, -colorFactor);
                 break;
         }
 
         sketch.ellipse(pos.x, pos.y, radius * 2, radius * 2);
     }
 
+    public float getSpeed() {
+        return speed;
+    }
+
+    public float getRadius() {
+        return radius;
+    }
+
+    public float getRad() {
+        return rad;
+    }
 }

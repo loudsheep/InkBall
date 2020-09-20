@@ -1,7 +1,12 @@
 package game;
 
+import app.App;
 import processing.core.PApplet;
 import processing.core.PImage;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Arrays;
 
 public class Square {
 
@@ -34,7 +39,7 @@ public class Square {
     private PApplet sketch;
     private PImage img;
     private boolean main_hole;
-    private String hType = null;
+    private HoleType hType = null;
     public float attractionR;
 
     private Grid grid;
@@ -66,20 +71,21 @@ public class Square {
 
         main_hole = main;
 
-        String name = null;
+//        String name = null;
+//
+//        if (hType == HoleType.BLUE) name = "blue";
+//        else if (hType == HoleType.GREEN) name = "green";
+//        else if (hType == HoleType.NEUTRAL) name = "neutral";
+//        else if (hType == HoleType.ORANGE) name = "orange";
+//        else if (hType == HoleType.RED) name = "red";
+//        else if (hType == HoleType.YELLOW) name = "yellow";
 
-        if (hType == HoleType.BLUE) name = "blue";
-        else if (hType == HoleType.GREEN) name = "green";
-        else if (hType == HoleType.NEUTRAL) name = "neutral";
-        else if (hType == HoleType.ORANGE) name = "orange";
-        else if (hType == HoleType.RED) name = "red";
-        else if (hType == HoleType.YELLOW) name = "yellow";
-
-        this.hType = name;
+        this.hType = hType;
 
         attractionR = w / 3;
 
         //img = sketch.loadImage("img/hole_" + name + ".bmp");
+
     }
 
     public Square(PApplet sketch, float posX, float posY, float w, float h, TYPE type, boolean main, HoleType hType) {
@@ -104,7 +110,44 @@ public class Square {
         else if (hType == HoleType.RED) name = "red";
         else if (hType == HoleType.YELLOW) name = "yellow";
 
-        img = sketch.loadImage("img/hole_" + name + ".bmp");
+        this.hType = hType;
+
+        StringBuilder path = new StringBuilder();
+
+        try {
+//            String s = String.valueOf(new File(App.class.getProtectionDomain().getCodeSource().getLocation().toURI()));
+//            System.out.println(s + " <<<<<<<<<<<<<<<< path");
+
+            String pathh = App.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            String decodedPath = URLDecoder.decode(pathh, "UTF-8");
+
+//            System.out.println(decodedPath + " >>>>>>>>>>>>>>>>>>  path 2.0");
+
+            //System.out.println(URLDecoder.decode(ClassLoader.getSystemClassLoader().getResource(".").getPath(), "UTF-8"));
+
+            String[] arr = decodedPath.split("/");
+//            System.out.println(Arrays.toString(arr));
+
+            path = new StringBuilder();
+
+            for (int i = 1; i < arr.length - 1; i++) {
+                path.append(arr[i]).append("/");
+            }
+            path.append("/");
+
+            System.out.println(path);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        if (!(App.class.getResource("App.class").toString().split(":")[0].equals("jar"))) {
+            path = new StringBuilder();
+            //System.out.println("not jar -- " + Arrays.toString(App.class.getResource("App.class").toString().split(":")));
+        }
+
+        System.out.println("path >>>>>>>>>>>>> " + path + "img/hole_" + name + ".bmp");
+
+        img = sketch.loadImage(path + "img/hole_" + name + ".bmp");
 
     }
 
@@ -228,11 +271,11 @@ public class Square {
     public void setSketch(PApplet sketch) {
         this.sketch = sketch;
         if (hType != null) {
-            img = sketch.loadImage("img/hole_" + hType + ".bmp");
+            img = sketch.loadImage("img/hole_" + hType.toString().toLowerCase() + ".bmp");
         }
     }
 
-    public String getHType() {
+    public HoleType getHType() {
         return hType;
     }
 
@@ -244,6 +287,18 @@ public class Square {
         for (Ball b : grid.balls) {
             if (b == ball) {
                 grid.balls.remove(b);
+                return;
+            }
+        }
+    }
+
+    public void wrongHole(Ball ball) {
+
+        for (Ball b : grid.balls) {
+            if (b == ball) {
+                //System.out.println("wrong -> o: "+b.getRadius() + " -- notO: " + ball.getRadius());
+                grid.balls.remove(b);
+                grid.addBall(ball, grid.getGameFrame() + 50);
                 return;
             }
         }

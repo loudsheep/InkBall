@@ -498,6 +498,7 @@ public class Maker extends PApplet {
         }
         text("Mode: " + modes[modeCount], 10, 10);
         text("Color: " + colors[colorCount], 10, 20);
+        text("Size: " + size+"x"+size, 10, 30);
 
         if (mousePressed) {
             if (mouseButton == LEFT) {

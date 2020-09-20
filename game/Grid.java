@@ -13,13 +13,10 @@ public class Grid {
     private int squaresY;
     private int w;
     private int h;
-
-    private PApplet sketch;
-
     private int gameFrame = 0;
 
+    private PApplet sketch;
     private ArrayList<Square> grid;
-
     public ArrayList<Ball> balls;
     public HashMap<Ball, Integer> waiting;
 
@@ -158,7 +155,6 @@ public class Grid {
         this.lh = new LineHandler(sketch);
     }
 
-
     public void setGrid(ArrayList<Square> grid) {
         this.grid = grid;
     }
@@ -234,21 +230,6 @@ public class Grid {
         sketch.text(gameFrame, 20, 20);
     }
 
-//    public void addBall(PApplet sketch, float speed, float radius, float r, float g, float b) {
-//
-//        ArrayList<Square> spawners = new ArrayList<>();
-//
-//        for (Square s : grid) {
-//            if (s.getType() == Square.TYPE.SPAWN) spawners.add(s);
-//        }
-//
-//        if (spawners.size() == 0) return;
-//
-//        Square rand = spawners.get((int) sketch.random(spawners.size()));
-//
-//        balls.add(new Ball(sketch, rand.getPosX() + rand.getW() / 2f, rand.getPosY() + rand.getH() / 2f, speed, radius, r, g, b));
-//    }
-
     public void addBall(float speed, float radius, Ball.COLOR c) {
         addBall(speed, radius, c, 10);
     }
@@ -268,17 +249,9 @@ public class Grid {
         waiting.put(new Ball(rand.getPosX() + rand.getW() / 2f, rand.getPosY() + rand.getH() / 2f, speed, radius, c), frame);
     }
 
-//    public void addBall(PApplet sketch, float posX, float posY, PVector initVel, float speed, float radius, float r, float g, float b) {
-//        int index = (int) (posY * squaresX + posX);
-//        float px, py;
-//
-//        Square s = grid.get(index);
-//
-//        px = s.getPosX() + s.getW() / 2;
-//        py = s.getPosY() + s.getH() / 2;
-//
-//        balls.add(new Ball(sketch, px, py, initVel, speed, radius, r, g, b));
-//    }
+    public void addBall(Ball ball, int frame) {
+        addBall(ball.getSpeed(), ball.getRad(), ball.color, frame);
+    }
 
     public void addBall(float posX, float posY, PVector initVel, float speed, float radius, Ball.COLOR c) {
         int index = (int) (posY * squaresX + posX);
@@ -299,5 +272,9 @@ public class Grid {
 
     public int getSquaresY() {
         return squaresY;
+    }
+
+    public int getGameFrame() {
+        return gameFrame;
     }
 }

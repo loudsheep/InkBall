@@ -6,6 +6,13 @@ import processing.core.PApplet;
 import reader.MapFromFile;
 
 import java.io.File;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.Arrays;
 
 public class App extends PApplet {
 
@@ -109,6 +116,8 @@ public class App extends PApplet {
 
     Grid game;
 
+    String pathh;
+
 
     boolean gameStarted = false;
 
@@ -137,21 +146,59 @@ public class App extends PApplet {
         start.setAction(this::startGame);
         exit.setAction(this::end);
 
-        File f = new File("levels/level" + level + ".map");
+        try {
+//            String s = String.valueOf(new File(App.class.getProtectionDomain().getCodeSource().getLocation().toURI()));
+//            System.out.println(s + " <<<<<<<<<<<<<<<< path");
+
+            String path = App.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            String decodedPath = URLDecoder.decode(path, "UTF-8");
+
+//            System.out.println(decodedPath + " >>>>>>>>>>>>>>>>>>  path 2.0");
+
+            //System.out.println(URLDecoder.decode(ClassLoader.getSystemClassLoader().getResource(".").getPath(), "UTF-8"));
+
+            String[] arr = decodedPath.split("/");
+//            System.out.println(Arrays.toString(arr));
+
+            pathh = "";
+
+            for (int i = 1; i < arr.length - 1; i++) {
+                pathh += "/" + arr[i];
+            }
+
+            pathh += "/";
+
+            System.out.println(pathh);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        if(!(App.class.getResource("App.class").toString().split(":")[0].equals("jar"))) {
+            pathh = "";
+            System.out.println("not jar -- " + Arrays.toString(App.class.getResource("App.class").toString().split(":")));
+        }else{
+            System.out.println("jar");
+        }
+
+        File f = new File(pathh + "levels/level" + level + ".map");
+//        InputStream cl = App.class.getResourceAsStream("/levels/level"+level+".map");
+//        File f = new File(String.valueOf(cl));
 
 //        while(!f.exists()) {
 //            level
 //            f = new File("levels/level" + level + ".map");
 //        }
 
-        if (f.exists() && !f.isDirectory()) {
+        if (f.exists()) {
+//        if (f.exists() && !f.isDirectory()) {
 
-            MapFromFile file = new MapFromFile("levels/level" + level + ".map", width, height - panelHeight);
+            MapFromFile file = new MapFromFile(pathh + "levels/level" + level + ".map", width, height - panelHeight);
+            System.out.println("loaded level 1");
 
             game = file.generate();
             game.setAll(this);
 
-            reset = new Button(this, "Restart", height / 60, width - (width/8 * 2), -panelHeight, width/8, panelHeight);
+            reset = new Button(this, "Restart", height / 60, width - (width / 8 * 2), -panelHeight, width / 8, panelHeight);
             reset.setStrokeColor(new Color(0, 0, 0));
             reset.setFillColor(new Color(255, 255, 255));
             reset.setTextColor(new Color(0, 0, 0));
@@ -159,14 +206,14 @@ public class App extends PApplet {
             reset.setActive(false);
 
 
-            next = new Button(this, "Next level", height / 60, width - (width/8 * 3), -panelHeight, width/8, panelHeight);
+            next = new Button(this, "Next level", height / 60, width - (width / 8 * 3), -panelHeight, width / 8, panelHeight);
             next.setStrokeColor(new Color(0, 0, 0));
             next.setFillColor(new Color(255, 255, 255));
             next.setTextColor(new Color(0, 0, 0));
             next.setAction(this::next);
             next.setActive(false);
 
-            prev = new Button(this, "Previous level", height / 60, width - (width/8 * 4), -panelHeight, width/8, panelHeight);
+            prev = new Button(this, "Previous level", height / 60, width - (width / 8 * 4), -panelHeight, width / 8, panelHeight);
             prev.setStrokeColor(new Color(0, 0, 0));
             prev.setFillColor(new Color(255, 255, 255));
             prev.setTextColor(new Color(0, 0, 0));
@@ -287,7 +334,7 @@ public class App extends PApplet {
         gameStarted = true;
 
         start.setActive(false);
-        exit = new Button(this, "Quit", height / 60, width - width/8, -panelHeight, width/8, panelHeight);
+        exit = new Button(this, "Quit", height / 60, width - width / 8, -panelHeight, width / 8, panelHeight);
         exit.setAction(this::end);
 
         reset.setActive(true);
@@ -301,11 +348,11 @@ public class App extends PApplet {
     }
 
     public void reset() {
-        File f = new File("levels/level" + level + ".map");
+        File f = new File(pathh + "levels/level" + level + ".map");
 
         if (f.exists() && !f.isDirectory()) {
 
-            MapFromFile file = new MapFromFile("levels/level" + level + ".map", width, height - panelHeight);
+            MapFromFile file = new MapFromFile(pathh + "levels/level" + level + ".map", width, height - panelHeight);
 
             game = file.generate();
             game.setAll(this);
