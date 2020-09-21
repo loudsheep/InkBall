@@ -1,7 +1,5 @@
 package reader;
 
-import app.App;
-import game.Ball;
 import game.Ball.COLOR;
 import game.Grid;
 import game.Square;
@@ -9,7 +7,6 @@ import processing.core.PVector;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;

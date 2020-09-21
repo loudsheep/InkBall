@@ -47,6 +47,25 @@ public class LineHandler {
         newLine = null;
     }
 
+    public void stopDraw(Ink hit) {
+        if (newLine == hit) {
+            for (Ink i : lines) {
+                if (i == hit) {
+                    lines.remove(hit);
+                    break;
+                }
+            }
+            stopDraw(true);
+        } else {
+            for (Ink i : lines) {
+                if (i == hit) {
+                    lines.remove(hit);
+                    return;
+                }
+            }
+        }
+    }
+
     public void show() {
         for (Ink i : lines) {
             i.show();

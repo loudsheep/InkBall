@@ -6,9 +6,21 @@ import processing.core.PImage;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Arrays;
+import java.util.*;
 
 public class Square {
+
+    private static final Map<HoleType, int[]> colors;
+
+    static {
+        colors = new HashMap<>();
+        colors.put(HoleType.BLUE, new int[]{63, 72, 204});
+        colors.put(HoleType.ORANGE, new int[]{255, 127, 39});
+        colors.put(HoleType.RED, new int[]{237, 28, 36});
+        colors.put(HoleType.GREEN, new int[]{34, 177, 76});
+        colors.put(HoleType.YELLOW, new int[]{255, 242, 0});
+        colors.put(HoleType.NEUTRAL, new int[]{200, 200, 200});
+    }
 
     public enum TYPE {
         WALL,
@@ -112,42 +124,42 @@ public class Square {
 
         this.hType = hType;
 
-        StringBuilder path = new StringBuilder();
-
-        try {
-//            String s = String.valueOf(new File(App.class.getProtectionDomain().getCodeSource().getLocation().toURI()));
-//            System.out.println(s + " <<<<<<<<<<<<<<<< path");
-
-            String pathh = App.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-            String decodedPath = URLDecoder.decode(pathh, "UTF-8");
-
-//            System.out.println(decodedPath + " >>>>>>>>>>>>>>>>>>  path 2.0");
-
-            //System.out.println(URLDecoder.decode(ClassLoader.getSystemClassLoader().getResource(".").getPath(), "UTF-8"));
-
-            String[] arr = decodedPath.split("/");
-//            System.out.println(Arrays.toString(arr));
-
-            path = new StringBuilder();
-
-            for (int i = 1; i < arr.length - 1; i++) {
-                path.append(arr[i]).append("/");
-            }
-            path.append("/");
-
-            System.out.println(path);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        if (!(App.class.getResource("App.class").toString().split(":")[0].equals("jar"))) {
-            path = new StringBuilder();
-            //System.out.println("not jar -- " + Arrays.toString(App.class.getResource("App.class").toString().split(":")));
-        }
-
-        System.out.println("path >>>>>>>>>>>>> " + path + "img/hole_" + name + ".bmp");
-
-        img = sketch.loadImage(path + "img/hole_" + name + ".bmp");
+//        StringBuilder path = new StringBuilder();
+//
+//        try {
+////            String s = String.valueOf(new File(App.class.getProtectionDomain().getCodeSource().getLocation().toURI()));
+////            System.out.println(s + " <<<<<<<<<<<<<<<< path");
+//
+//            String pathh = App.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+//            String decodedPath = URLDecoder.decode(pathh, "UTF-8");
+//
+////            System.out.println(decodedPath + " >>>>>>>>>>>>>>>>>>  path 2.0");
+//
+//            //System.out.println(URLDecoder.decode(ClassLoader.getSystemClassLoader().getResource(".").getPath(), "UTF-8"));
+//
+//            String[] arr = decodedPath.split("/");
+////            System.out.println(Arrays.toString(arr));
+//
+//            path = new StringBuilder();
+//
+//            for (int i = 1; i < arr.length - 1; i++) {
+//                path.append(arr[i]).append("/");
+//            }
+//            path.append("/");
+//
+//            System.out.println(path);
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+//
+//        if (!(App.class.getResource("App.class").toString().split(":")[0].equals("jar"))) {
+//            path = new StringBuilder();
+//            //System.out.println("not jar -- " + Arrays.toString(App.class.getResource("App.class").toString().split(":")));
+//        }
+//
+//        System.out.println("path >>>>>>>>>>>>> " + path + "img/hole_" + name + ".bmp");
+//
+//        img = sketch.loadImage(path + "img/hole_" + name + ".bmp");
 
     }
 
@@ -236,11 +248,23 @@ public class Square {
 
 
             if (main_hole) {
+//                sketch.stroke(200);
+//                sketch.fill(220);
+//                sketch.strokeWeight(2);
+//                sketch.rect(posX, posY, w, h);
+//                sketch.image(img, posX + 1, posY + 1, w - 1, h - 1);
+
+                int[] c = Square.colors.get(hType);
+
+                sketch.fill(c[0], c[1], c[2]);
                 sketch.stroke(200);
-                sketch.fill(220);
-                sketch.strokeWeight(2);
-                sketch.rect(posX, posY, w, h);
-                sketch.image(img, posX + 1, posY + 1, w - 1, h - 1);
+
+                sketch.rect(posX,posY,w,h);
+
+                sketch.stroke(50);
+                sketch.strokeWeight(w/20);
+                sketch.fill(0);
+                sketch.ellipse(posX + w/2, posY + h/2, w/3*2,h/3*2);
             }
 
         }

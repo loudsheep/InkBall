@@ -226,7 +226,7 @@ public class Grid {
         }
         lh.show();
 
-        sketch.textSize(w / squaresX / 3);
+        sketch.textSize(w / (float)squaresX / 3f);
         sketch.text(gameFrame, 20, 20);
     }
 
@@ -250,7 +250,7 @@ public class Grid {
     }
 
     public void addBall(Ball ball, int frame) {
-        addBall(ball.getSpeed(), ball.getRad(), ball.color, frame);
+        addBall(ball.getSpeed(), ball.getRadius(), ball.color, frame);
     }
 
     public void addBall(float posX, float posY, PVector initVel, float speed, float radius, Ball.COLOR c) {

@@ -23,8 +23,7 @@ public class Ball {
     private float speed;        // ball speed
     private float radius;       // ball radius
     private final float rad;    // const for init radius (see collide method)
-    public float r, g, b;      // color r, color g, color b
-    public COLOR color;
+    public COLOR color;         // represents color of ball
 
     public Ball(PApplet sketch, float posX, float posY, float speed, float radius, COLOR c) { // contructor
         this.sketch = sketch;
@@ -150,7 +149,7 @@ public class Ball {
 
                 if (d < s.attractionR) { // ball inside hole
 
-                    if (d < s.attractionR / 3) { // when too close delete this ball
+                    if (d < s.attractionR / 2) { // when too close delete this ball
 
                         if (s.getHType().toString() == color.toString()) {
                             s.del(this);
@@ -336,8 +335,8 @@ public class Ball {
                 vel.setMag(speed);
                 pos.add(vel);
 
-                handler.stopDraw(true);
-                handler.lines.remove(i);
+                handler.stopDraw(ink);
+                //handler.lines.remove(i);
 
                 return;
 
@@ -372,15 +371,30 @@ public class Ball {
         sketch.ellipse(pos.x, pos.y, radius * 2, radius * 2);
     }
 
+    public int[] getColorArray() {
+
+        switch (color) {
+            case RED:
+                return new int[]{235 - colorFactor, 28 - colorFactor, 38 - colorFactor};
+            case BLUE:
+                return new int[]{63 - colorFactor, 72 - colorFactor, 204 - colorFactor};
+            case GREEN:
+                return new int[]{34 - colorFactor, 177 - colorFactor, 76 - colorFactor};
+            case ORANGE:
+                return new int[]{255 - colorFactor, 127 - colorFactor, 39 - colorFactor};
+            case YELLOW:
+                return new int[]{255 - colorFactor, 242 - colorFactor, -colorFactor};
+        }
+
+        return new int[]{0, 0, 0};
+
+    }
+
     public float getSpeed() {
         return speed;
     }
 
     public float getRadius() {
-        return radius;
-    }
-
-    public float getRad() {
         return rad;
     }
 }

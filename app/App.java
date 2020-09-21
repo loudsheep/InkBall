@@ -13,6 +13,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class App extends PApplet {
 
@@ -110,9 +111,9 @@ public class App extends PApplet {
 
     Button start;
     Button exit;
-    Button reset;// = new Button(this, "Restart", height / 60, width - (width/8 * 2), -panelHeight, width/8, panelHeight);;
-    Button next;// = new Button(this, "Next level", height / 60, width - (width/8 * 3), -panelHeight, width/8, panelHeight);;
-    Button prev;// = new Button(this, "Previous level", height / 60, width - (width/8 * 4), -panelHeight, width/8, panelHeight);;
+    Button reset;
+    Button next;
+    Button prev;
 
     Grid game;
 
@@ -129,6 +130,10 @@ public class App extends PApplet {
     }
 
     public void setup() {
+
+        surface.setTitle("Ink Ball");
+        //surface.setLocation(1000,100);
+
         start = new Button(this, "Start game", height / 30, width / 4, height / 5, width / 2, height / 10);
         start.setStrokeColor(new Color(0, 0, 0));
         start.setFillColor(new Color(255, 255, 255));
@@ -139,58 +144,34 @@ public class App extends PApplet {
         exit.setFillColor(new Color(255, 255, 255));
         exit.setTextColor(new Color(0, 0, 0));
 
-//        exit = new Button(this, "Quit", height / 60, width - (width / game.getSquaresX() * 2), -panelHeight, width / game.getSquaresX() * 2, panelHeight);
-//        exit.setAction(this::end);
-
-
         start.setAction(this::startGame);
         exit.setAction(this::end);
 
         try {
-//            String s = String.valueOf(new File(App.class.getProtectionDomain().getCodeSource().getLocation().toURI()));
-//            System.out.println(s + " <<<<<<<<<<<<<<<< path");
 
             String path = App.class.getProtectionDomain().getCodeSource().getLocation().getPath();
             String decodedPath = URLDecoder.decode(path, "UTF-8");
-
-//            System.out.println(decodedPath + " >>>>>>>>>>>>>>>>>>  path 2.0");
-
-            //System.out.println(URLDecoder.decode(ClassLoader.getSystemClassLoader().getResource(".").getPath(), "UTF-8"));
-
             String[] arr = decodedPath.split("/");
-//            System.out.println(Arrays.toString(arr));
-
             pathh = "";
-
             for (int i = 1; i < arr.length - 1; i++) {
                 pathh += "/" + arr[i];
             }
-
             pathh += "/";
-
             System.out.println(pathh);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
-        if(!(App.class.getResource("App.class").toString().split(":")[0].equals("jar"))) {
+        if (!(App.class.getResource("App.class").toString().split(":")[0].equals("jar"))) {
             pathh = "";
             System.out.println("not jar -- " + Arrays.toString(App.class.getResource("App.class").toString().split(":")));
-        }else{
+        } else {
             System.out.println("jar");
         }
 
         File f = new File(pathh + "levels/level" + level + ".map");
-//        InputStream cl = App.class.getResourceAsStream("/levels/level"+level+".map");
-//        File f = new File(String.valueOf(cl));
-
-//        while(!f.exists()) {
-//            level
-//            f = new File("levels/level" + level + ".map");
-//        }
 
         if (f.exists()) {
-//        if (f.exists() && !f.isDirectory()) {
 
             MapFromFile file = new MapFromFile(pathh + "levels/level" + level + ".map", width, height - panelHeight);
             System.out.println("loaded level 1");
@@ -228,40 +209,13 @@ public class App extends PApplet {
         background(220);
         translate(0, panelHeight);
 
-        //if(game == null)return;
-
         if (gameStarted) {
             noFill();
             stroke(0);
             rect(0, -panelHeight, width / 6f, panelHeight);
 
-//            fill(0);
-//            textSize(panelHeight/2f);
-//            //textAlign(CENTER);
-//            text(game.waiting.size() + " balls left", 10, -panelHeight/3f);
-
             if (game.waiting.size() != 0) {
                 int i = 1;
-//                Set<Entry<Ball, Integer>> entries = game.waiting.entrySet();
-//
-//                TreeMap<Ball, Integer> sorted = new TreeMap<>(game.waiting);
-//                Set<Entry<Ball, Integer>> mappings = sorted.entrySet();
-//
-//                List<Entry<Ball, Integer>> listOfEntries = new ArrayList<>(entries);
-//
-//                Collections.sort(listOfEntries, new Comparator<Entry<Ball, Integer>>() {
-//                    @Override
-//                    public int compare(Entry<Ball, Integer> o1, Entry<Ball, Integer> o2) {
-//                        return o1.getValue().compareTo(o2.getValue());
-//                    }
-//                });
-//
-//                LinkedHashMap<Ball, Integer> sortedByValue = new LinkedHashMap<>(listOfEntries.size());
-//
-//                for(Entry<Ball, Integer> entry: listOfEntries) {
-//                    sortedByValue.put(entry.getKey(),entry.getValue());
-//                }
-
 
                 for (Ball b : game.waiting.keySet()) {
 
@@ -272,8 +226,11 @@ public class App extends PApplet {
                     int x = (r + 2) * i;
 
                     noStroke();
-                    fill(b.r, b.g, b.b);
+                    //fill(0);
 
+                    int[] c = b.getColorArray();
+
+                    fill(c[0], c[1], c[2]);
                     ellipse(x, y, r, r);
 
 
@@ -288,12 +245,6 @@ public class App extends PApplet {
             if (game.balls.size() == 0 && game.waiting.size() == 0) {
                 next();
             }
-
-//            if (game.waiting.size() != 0) {
-//                for (int i = 0; i < game.waiting.size(); i++){
-//                    game.waiting.
-//                }
-//            }
 
         }
 
@@ -341,6 +292,8 @@ public class App extends PApplet {
         next.setActive(true);
         prev.setActive(true);
 
+        reset();
+
     }
 
     public void end() {
@@ -356,6 +309,7 @@ public class App extends PApplet {
 
             game = file.generate();
             game.setAll(this);
+            surface.setTitle("Ink Ball - Level " + (level + 1));
         } else if (level < 0) {
             while (level != 0) level++;
         } else {
