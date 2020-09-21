@@ -26,7 +26,6 @@ public class LineHandler {
         newLine.show();
     }
 
-
     public void startDraw(int mouseX, int mouseY, int pmouseX, int pmouseY) {
         drawing = true;
         lines.add(new Ink(sketch));
