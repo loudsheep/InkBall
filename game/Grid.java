@@ -68,18 +68,13 @@ public class Grid {
     }
 
     public void update(int mouseX, int mouseY, int pmouseX, int pmouseY) {
-//        PVector avg = new PVector();
 
         lh.draw(mouseX, mouseY, pmouseX, pmouseY);
         gameFrame++;
 
         try {
             for (Ball b : balls) {
-//        for (int i = balls.size() - 1; i >= 0; i--) {
-
-//            Ball bb = balls.get(i);
                 Ball bb = b;
-
 
                 try {
                     bb.move();
@@ -88,11 +83,6 @@ public class Grid {
                 } catch (Exception ignored) {
                     break;
                 }
-
-
-//            avg.x += b.pos.x;
-//            avg.y += b.pos.y;
-                //b.collide(l);
             }
         } catch (ConcurrentModificationException ignored) {
         }
@@ -107,13 +97,6 @@ public class Grid {
                 }
             }
         }
-
-//        avg.x /= balls.size();
-//        avg.y /= balls.size();
-//
-//        sketch.strokeWeight(10);
-//        sketch.stroke(255, 0, 0);
-//        sketch.point(avg.x, avg.y);
 
     }
 
@@ -134,7 +117,7 @@ public class Grid {
         }
         lh.show();
 
-        sketch.textSize(w / (float)squaresX / 3f);
+        sketch.textSize(w / (float) squaresX / 3f);
         sketch.text(gameFrame, 20, 20);
     }
 

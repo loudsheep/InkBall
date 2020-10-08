@@ -137,10 +137,13 @@ public class Ball {
                 !!! have to be improved (weird things happen when inside that block and having opposite velocity ( for example 'one way up' block and velocity pointing down) !!!
              */
 
-            if (s.getType() == Square.TYPE.ONE_WAY_DOWN && vel.y > 0) continue;
-            if (s.getType() == Square.TYPE.ONE_WAY_UP && vel.y < 0) continue;
-            if (s.getType() == Square.TYPE.ONE_WAY_RIGHT && vel.x > 0) continue;
-            if (s.getType() == Square.TYPE.ONE_WAY_LEFT && vel.x < 0) continue;
+//            if (s.getType() == Square.TYPE.ONE_WAY_DOWN && vel.y > 0) continue;
+//            if (s.getType() == Square.TYPE.ONE_WAY_UP && vel.y < 0) continue;
+//            if (s.getType() == Square.TYPE.ONE_WAY_RIGHT && vel.x > 0) continue;
+//            if (s.getType() == Square.TYPE.ONE_WAY_LEFT && vel.x < 0) continue;
+
+
+//            if(oneWayCollision(s)) return;
 
             if (s.getType() == Square.TYPE.HOLE) {
                 //continue;
@@ -151,7 +154,7 @@ public class Ball {
 
                     if (d < s.attractionR / 2) { // when too close delete this ball
 
-                        if (s.getHType().toString() == color.toString()) {
+                        if (s.getHType().toString().equals(color.toString())) {
                             s.del(this);
                         } else {
                             if (s.getHType() == Square.HoleType.NEUTRAL) {
@@ -181,6 +184,7 @@ public class Ball {
                 continue;
             }
 
+            if (oneWayCollision(s)) return;
 
             if (sideCollision(s)) return;
 
@@ -267,6 +271,75 @@ public class Ball {
         return sideCollision(s);
 
         //return false;
+    }
+
+    private boolean oneWayCollision(Square s) {
+//        if (s.getType() == Square.TYPE.ONE_WAY_DOWN && vel.y > 0) continue;
+//        if (s.getType() == Square.TYPE.ONE_WAY_UP && vel.y < 0) continue;
+//        if (s.getType() == Square.TYPE.ONE_WAY_RIGHT && vel.x > 0) continue;
+//        if (s.getType() == Square.TYPE.ONE_WAY_LEFT && vel.x < 0) continue;
+        if (s.getType() != Square.TYPE.ONE_WAY_DOWN && s.getType() != Square.TYPE.ONE_WAY_UP && s.getType() != Square.TYPE.ONE_WAY_RIGHT && s.getType() != Square.TYPE.ONE_WAY_LEFT) {
+            return false;
+        }
+
+//        if (pos.x >= s.getPosX() && pos.x <= s.getPosX() + s.getW()) {
+//            if (pos.y >= s.getPosY() && pos.y <= s.getPosY() + s.getH()) { // we're inside one way block
+//                return true;
+//            }
+//        }
+
+        if (pos.y + radius >= s.getPosY() && pos.y < (s.getPosY() + rad) && pos.x >= s.getPosX() && pos.x <= (s.getPosX() + s.getW())) { // up side collision
+            System.out.println("up");
+            if (s.getType() == Square.TYPE.ONE_WAY_UP) {
+                if (vel.y > 0) {
+                    vel.y = -vel.y;
+                    pos.y = s.getPosY() - rad;
+                }
+            }
+            return true;
+        }
+
+        if (pos.y - radius <= s.getPosY() + s.getH() && pos.y > s.getPosY() && pos.x >= s.getPosX() && pos.x <= s.getPosX() + s.getW()) { // down side collision
+            System.out.println("down");
+            if (s.getType() == Square.TYPE.ONE_WAY_DOWN) {
+                if (vel.y < 0) {
+                    vel.y = -vel.y;
+                    pos.y = s.getPosY() + s.getH() + rad;
+                }
+            }
+            return true;
+        }
+
+        if (pos.x + radius >= s.getPosX() && pos.x < s.getPosX() + s.getW() && pos.y >= s.getPosY() && pos.y <= s.getPosY() + s.getH()) { // left side collision
+            System.out.println("left");
+            if (s.getType() == Square.TYPE.ONE_WAY_LEFT) {
+                if (vel.x >= 0) {
+                    vel.x = -vel.x;
+                    pos.x = s.getPosX() - rad;
+                }
+            }
+            return true;
+        }
+
+        if (pos.x - radius <= s.getPosX() + s.getW() && pos.x > s.getPosX() && pos.y >= s.getPosY() && pos.y <= s.getPosY() + s.getH()) { // right side collision
+            System.out.println("right");
+            if (s.getType() == Square.TYPE.ONE_WAY_RIGHT) {
+                if (vel.x <= 0) {
+                    vel.x = -vel.x;
+                    pos.x = s.getPosX() + s.getW() + rad;
+                }
+            }
+            return true;
+        }
+
+        if (pos.x >= s.getPosX() && pos.x <= s.getPosX() + s.getW()) {
+            if (pos.y >= s.getPosY() && pos.y <= s.getPosY() + s.getH()) { // we're inside one way block
+                return true;
+            }
+        }
+
+
+        return false;
     }
 
     public void move() { // moves ball
