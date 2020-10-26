@@ -508,16 +508,41 @@ public class Maker extends PApplet {
             s.show();
         }
 
+        strokeWeight(2);
+
+        for (int i = 0; i < ballSettings.size(); i++) {
+
+            String[] s = ballSettings.get(i);
+
+            int[] col = ballColor.get(Square.HoleType.valueOf(s[6].toUpperCase()));
+
+            stroke(col[0], col[1], col[2], 150);
+            fill(col[0], col[1], col[2], 150);
+
+            float xxx = (Integer.parseInt(s[2]) + 1) * (width / (float) size) - (width / (float) size / 2);
+            float yyy = (Integer.parseInt(s[3]) + 1) * (width / (float) size) - (width / (float) size / 2);
+
+            ellipse(xxx, yyy, width / (float) size, width / (float) size);
+
+            stroke(0, 150);
+
+            line(xxx, yyy, xxx + (Integer.parseInt(s[4]) * 30), yyy + (Integer.parseInt(s[5]) * 30));
+
+            fill(0);
+            textSize(12);
+            text(i + 1, xxx, yyy);
+        }
+
         if (addBall) {
 
             int[] c = ballColor.get(Square.HoleType.valueOf(colors[colorCount]));
             stroke(c[0], c[1], c[2]);
             fill(c[0], c[1], c[2]);
 
-            float x = (ballX + 1) * (width / size) - (width / size / 2);
-            float y = (ballY + 1) * (width / size) - (width / size / 2);
+            float x = (ballX + 1) * (width / (float) size) - (width / (float) size / 2);
+            float y = (ballY + 1) * (width / (float) size) - (width / (float) size / 2);
 
-            ellipse(x, y, width / size, width / size);
+            ellipse(x, y, width / (float) size, width / (float) size);
 
 //            float xx = rotation % 2 == 0 ? 0 : 1;
 //            float yy = rotation % 2 == 0 ? 1 : 0;
@@ -541,14 +566,61 @@ public class Maker extends PApplet {
             stroke(0);
             strokeWeight(3);
             line(x, y, x + (xx * 30), y + (yy * 30));
+
+
         }
 
-        for (int i = 0; i < ballSettings.size(); i++) {
+        strokeWeight(1);
+
+        for (int i = ballSettings.size() - 1; i >= 0; i--) {
+
+
+            String[] arr = ballSettings.get(i);
+
+            if (Integer.parseInt(arr[2]) >= size - 1) {
+                ballSettings.remove(i);
+                surface.setSize(width, (int) (height - width / 20f));
+                continue;
+            }
+
+            if (Integer.parseInt(arr[3]) >= size - 1) {
+                ballSettings.remove(i);
+                surface.setSize(width, (int) (height - width / 20f));
+                continue;
+            }
+
+            float y = originalHeight + (i * width / 20f) + width / 20f / 2;
+
             stroke(0);
             noFill();
 
-            rect(0, originalHeight, width, width / 20);
+            rect(0, originalHeight + (i * width / 20f), width, width / 20f);
+
+            stroke(255, 0, 0);
+            fill(255, 0, 0, 50);
+            rect(width / 10 * 9, originalHeight + (i * width / 20f), width / 10, width / 20);
+
+            textSize(12);
+            fill(255, 0, 0);
+            text("Delete", (float) (width / 10 * 9.25), y + 6);
+
+
+            int[] c = ballColor.get(Square.HoleType.valueOf(arr[6].toUpperCase()));
+
+            stroke(c[0], c[1], c[2]);
+            fill(c[0], c[1], c[2]);
+
+
+            ellipse(width / 20f, y, 20, 20);
+
+            fill(0);
+
+            textSize(20);
+
+            text("Position: " + arr[2] + "x" + arr[3], width / 20f * 3, y + 10);
+            text(i + 1, width / 20f / 3, y + 10);
         }
+
 
         fill(0);
 
@@ -588,14 +660,30 @@ public class Maker extends PApplet {
                 ballX = (int) (mouseX / (float) width * size);
                 ballY = (int) (mouseY / (float) height * size);
 
-                if (ballX < 2) ballX = 2;
-                if (ballX > size - 1) ballX = size - 1;
+                if (ballX < 1) ballX = 1;
+                if (ballX > size - 2) ballX = size - 2;
 
-                if (ballY < 2) ballY = 2;
-                if (ballY > size - 1) ballY = size - 1;
+                if (ballY < 1) ballY = 1;
+                if (ballY > size - 2) ballY = size - 2;
             }
         }
 
+        if (ballX < 1) ballX = 1;
+        if (ballX > size - 2) ballX = size - 2;
+
+        if (ballY < 1) ballY = 1;
+        if (ballY > size - 2) ballY = size - 2;
+
+    }
+
+    public void mousePressed() {
+        for (int i = ballSettings.size() - 1; i >= 0; i--) {
+            if (mouseY > originalHeight + (i * width / 20f) && mouseY < originalHeight + ((i + 1) * width / 20f) && mouseX > width / 10 * 9) {
+                ballSettings.remove(i);
+                surface.setSize(width, (int) (height - width / 20f));
+                return;
+            }
+        }
     }
 
     public void mouseWheel(MouseEvent e) {
@@ -763,6 +851,9 @@ public class Maker extends PApplet {
         surface.setSize(width, height + width / 20);
 
         System.out.println(Arrays.toString(settings));
+
+        ballX = 1;
+        ballY = 1;
     }
 
     public void keyPressed() {
