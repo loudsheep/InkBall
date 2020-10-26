@@ -80,7 +80,7 @@ public class MapFromFile {
                 int count = 0;
 
 
-                String[] setting = lineSetting[j].split("-");
+                String[] setting = lineSetting[j].split("=");
 
 
                 int num = Integer.parseInt(setting[0]);
@@ -146,7 +146,7 @@ public class MapFromFile {
 
                     for (int i = 1; i < lineSetting.length; i++) {
 
-                        String[] setting = lineSetting[i].split("-");
+                        String[] setting = lineSetting[i].split("=");
 
                         switch (setting[0]) {
                             case "speed":
@@ -190,7 +190,7 @@ public class MapFromFile {
 //                    int[] c = colors.get(lineSetting[2].split("-")[1]);
 
                     for (int i = 1; i < lineSetting.length; i++) {
-                        String[] setting = lineSetting[i].split("-");
+                        String[] setting = lineSetting[i].split("=");
 
                         switch (setting[0]) {
                             case "speed":

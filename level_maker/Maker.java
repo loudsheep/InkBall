@@ -1,10 +1,9 @@
 package level_maker;
 
-import game.Square;
 import processing.core.PApplet;
 import processing.core.PImage;
-import processing.core.PVector;
 import processing.event.MouseEvent;
+import reader.MapFromFile;
 
 import java.io.File;
 import java.util.*;
@@ -17,7 +16,16 @@ public class Maker extends PApplet {
     }
 
     public Maker(String pathFrom) {
+        MapFromFile map = new MapFromFile(pathFrom, 1, 1);
+        ArrayList<game.Square> squares = map.generate().getGrid();
 
+        rect = new ArrayList<>();
+
+//        for(game.Square s: squares) {
+//            if(s.getType() == game.Square.TYPE.HOLE) {
+//                rect.add(new Square(this,s.getPosX(),s.getPosY(),))
+//            }
+//        }
     }
 
     private static final Map<Square.HoleType, int[]> ballColor;
@@ -769,12 +777,12 @@ public class Maker extends PApplet {
                 if (current.getType() == rect.get(index).getType() && current.gethType() == rect.get(index).gethType() && current.main_hole == rect.get(index).main_hole) {
                     count++;
                 } else {
-                    String s = count + "-" + current.getType();
+                    String s = count + "=" + current.getType();
 
                     if (current.getType() == Square.TYPE.HOLE) {
                         System.out.println("hole making ---- main: " + current.main_hole + " --------- " + current.gethType());
                         if (current.main_hole) {
-                            s += "-" + current.gethType();
+                            s += "=" + current.gethType();
                         }
                     }
 
@@ -787,7 +795,7 @@ public class Maker extends PApplet {
 
             }
 
-            String s = count + "-" + current.getType() + ",";
+            String s = count + "=" + current.getType() + ",";
             str.append(s);
 
 
@@ -799,12 +807,12 @@ public class Maker extends PApplet {
             String string = "";
 
             string += s[0] + ",";
-            string += "speed-" + s[1] + ",";
-            string += "posX-" + s[2] + ",";
-            string += "posY-" + s[3] + ",";
-            string += "velX-" + s[4] + ",";
-            string += "velY-" + s[5] + ",";
-            string += "color-" + s[6] + ",";
+            string += "speed=" + s[1] + ",";
+            string += "posX=" + s[2] + ",";
+            string += "posY=" + s[3] + ",";
+            string += "velX=" + s[4] + ",";
+            string += "velY=" + s[5] + ",";
+            string += "color=" + s[6] + ",";
 
 
             str.append(string).append("\n");

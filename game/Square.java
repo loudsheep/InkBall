@@ -1,12 +1,10 @@
 package game;
 
-import app.App;
 import processing.core.PApplet;
 import processing.core.PImage;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Square {
 

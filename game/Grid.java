@@ -67,6 +67,10 @@ public class Grid {
         this.grid = grid;
     }
 
+    public ArrayList<Square> getGrid() {
+        return grid;
+    }
+
     public void update(int mouseX, int mouseY, int pmouseX, int pmouseY) {
 
         lh.draw(mouseX, mouseY, pmouseX, pmouseY);
