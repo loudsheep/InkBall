@@ -165,7 +165,7 @@ public class MapFromFile {
                                 velY = Integer.parseInt(setting[1]);
                                 break;
                             case "color":
-                                c = colors.get(setting[1]);
+                                c = colors.get(setting[1].toLowerCase());
                                 break;
                         }
 

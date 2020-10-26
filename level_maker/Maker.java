@@ -1,7 +1,9 @@
 package level_maker;
 
+import game.Square;
 import processing.core.PApplet;
 import processing.core.PImage;
+import processing.core.PVector;
 import processing.event.MouseEvent;
 
 import java.io.File;
@@ -9,6 +11,26 @@ import java.util.*;
 
 
 public class Maker extends PApplet {
+
+    public Maker() {
+
+    }
+
+    public Maker(String pathFrom) {
+
+    }
+
+    private static final Map<Square.HoleType, int[]> ballColor;
+
+    static {
+        ballColor = new HashMap<>();
+        ballColor.put(Square.HoleType.BLUE, new int[]{73, 82, 214});
+        ballColor.put(Square.HoleType.ORANGE, new int[]{255, 137, 49});
+        ballColor.put(Square.HoleType.RED, new int[]{247, 38, 46});
+        ballColor.put(Square.HoleType.GREEN, new int[]{44, 187, 86});
+        ballColor.put(Square.HoleType.YELLOW, new int[]{255, 252, 10});
+        ballColor.put(Square.HoleType.NEUTRAL, new int[]{73, 82, 214});
+    }
 
     //public final PImage img = loadImage("img/hole_blue.bmp");
 
@@ -134,7 +156,7 @@ public class Maker extends PApplet {
 
             this.sketch = sketch;
 
-            main_hole = true;
+            main_hole = main;
 
             this.i = i;
             this.j = j;
@@ -244,7 +266,7 @@ public class Maker extends PApplet {
                 sketch.vertex(posX + w / 3, posY + h / 2);
 
                 sketch.endShape();
-            } else if (type == TYPE.HOLE){
+            } else if (type == TYPE.HOLE) {
 
 
                 if (main_hole) {
@@ -334,9 +356,9 @@ public class Maker extends PApplet {
                         return;
                     }
 
-                    if(type == TYPE.HOLE) {
+                    if (type == TYPE.HOLE) {
                         System.out.println("holelelele");
-                        if(main_hole) {
+                        if (main_hole) {
                             antiMakeHole(sq);
                             type = TYPE.valueOf(mode);
                             main_hole = false;
@@ -391,7 +413,7 @@ public class Maker extends PApplet {
                 setImg(sketch.img.get(name));
 
                 for (Square s : sq) {
-                    if(s == this) continue;
+                    if (s == this) continue;
 //                    if(s.i == i) {
 //                        if(s.i == i+1 || s.i == i+2) {
 //                            s.setType(TYPE.HOLE);
@@ -400,8 +422,8 @@ public class Maker extends PApplet {
 //                    }
                     if (s.i < i + 3 && s.j < j + 3) {
                         if (s.i >= i && s.j >= j) {
-                            if(s.getType() == TYPE.HOLE) {
-                                if(s.main_hole) {
+                            if (s.getType() == TYPE.HOLE) {
+                                if (s.main_hole) {
                                     s.antiMakeHole(sq);
                                 }
                             }
@@ -419,35 +441,30 @@ public class Maker extends PApplet {
 
     private int size = 20;
     private float sizeX, sizeY;
+    private float originalHeight;
 
     private ArrayList<Square> rect;
-
-//    PImage blue = null;
-//    PImage green = null;
-//    PImage neutral = null;
-//    PImage orange = null;
-//    PImage red = null;
-//    PImage yellow = null;
-
     public HashMap<String, PImage> img;
 
     private String[] modes = {"WALL", "ONE_WAY_UP", "ONE_WAY_DOWN", "ONE_WAY_RIGHT", "ONE_WAY_LEFT", "SPAWN", "HOLE"};
     private int modeCount = 0;
 
-//    public enum HoleType {
-//        BLUE,
-//        ORANGE,
-//        RED,
-//        GREEN,
-//        YELLOW,
-//        NEUTRAL
-//    }
 
     private String[] colors = {"BLUE", "ORANGE", "RED", "GREEN", "YELLOW", "NEUTRAL"};
     private int colorCount = 0;
 
+    private ArrayList<String[]> ballSettings;
+
+    private boolean addBall = false;
+    private int ballX = 1;
+    private int ballY = 1;
+    private int rotation = 0;
+    private int xx, yy;
+
     public void settings() {
         size(800, 800);
+
+        originalHeight = height;
     }
 
     public void setup() {
@@ -472,6 +489,10 @@ public class Maker extends PApplet {
         img.put("orange", requestImage("img/hole_orange.bmp"));
         img.put("red", requestImage("img/hole_red.bmp"));
         img.put("yellow", requestImage("img/hole_yellow.bmp"));
+
+        ballSettings = new ArrayList<>();
+
+        //ellipseMode(CENTER);
     }
 
     public void draw() {
@@ -487,6 +508,48 @@ public class Maker extends PApplet {
             s.show();
         }
 
+        if (addBall) {
+
+            int[] c = ballColor.get(Square.HoleType.valueOf(colors[colorCount]));
+            stroke(c[0], c[1], c[2]);
+            fill(c[0], c[1], c[2]);
+
+            float x = (ballX + 1) * (width / size) - (width / size / 2);
+            float y = (ballY + 1) * (width / size) - (width / size / 2);
+
+            ellipse(x, y, width / size, width / size);
+
+//            float xx = rotation % 2 == 0 ? 0 : 1;
+//            float yy = rotation % 2 == 0 ? 1 : 0;
+
+            if (rotation == 0 || rotation == 2) {
+                xx = 0;
+            } else if (rotation == 1) {
+                xx = 1;
+            } else {
+                xx = -1;
+            }
+
+            if (rotation == 1 || rotation == 3) {
+                yy = 0;
+            } else if (rotation == 2) {
+                yy = -1;
+            } else {
+                yy = 1;
+            }
+
+            stroke(0);
+            strokeWeight(3);
+            line(x, y, x + (xx * 30), y + (yy * 30));
+        }
+
+        for (int i = 0; i < ballSettings.size(); i++) {
+            stroke(0);
+            noFill();
+
+            rect(0, originalHeight, width, width / 20);
+        }
+
         fill(0);
 
         if (colorCount < 0) {
@@ -496,20 +559,40 @@ public class Maker extends PApplet {
         if (modeCount < 0) {
             modeCount = modes.length - 1;
         }
+
+        textSize(12);
+
         text("Mode: " + modes[modeCount], 10, 10);
         text("Color: " + colors[colorCount], 10, 20);
-        text("Size: " + size+"x"+size, 10, 30);
+        text("Size: " + size + "x" + size, 10, 30);
+
+        if (addBall) {
+            fill(255, 0, 0);
+            textSize(25);
+            text("BALL SETTINGS", 100, 20);
+        }
 
         if (mousePressed) {
-            if (mouseButton == LEFT) {
-                for (Square s : rect) {
-                    s.pressed(modes[modeCount], rect, colors[colorCount]);
-                }
-            } else if (mouseButton == RIGHT) {
-                for (Square s : rect) {
-                    s.pressed("FREE", rect, colors[colorCount]);
-                }
+            if (!addBall) {
+                if (mouseButton == LEFT) {
+                    for (Square s : rect) {
+                        s.pressed(modes[modeCount], rect, colors[colorCount]);
+                    }
+                } else if (mouseButton == RIGHT) {
+                    for (Square s : rect) {
+                        s.pressed("FREE", rect, colors[colorCount]);
+                    }
 
+                }
+            } else {
+                ballX = (int) (mouseX / (float) width * size);
+                ballY = (int) (mouseY / (float) height * size);
+
+                if (ballX < 2) ballX = 2;
+                if (ballX > size - 1) ballX = size - 1;
+
+                if (ballY < 2) ballY = 2;
+                if (ballY > size - 1) ballY = size - 1;
             }
         }
 
@@ -540,10 +623,9 @@ public class Maker extends PApplet {
         rect.clear();
 
         sizeX = width / (float) size;
-        sizeY = height / (float) size;
+        sizeY = originalHeight / (float) size;
 
         for (int i = 0; i < size; i++) {
-            outer:
             for (int j = 0; j < size; j++) {
 
                 Square.TYPE type = Square.TYPE.FREE;
@@ -553,20 +635,6 @@ public class Maker extends PApplet {
                 for (Square s : rectCopy) {
                     if (s.i == i && s.j == j && s.i != 0 && s.i != s.maxI && s.j != 0 && s.j != s.maxJ) {
                         type = s.getType();
-
-//                        s.setPosX(sizeX * i);
-//                        s.setPosY(sizeX * j);
-//                        s.setW(sizeX);
-//                        s.setH(sizeY);
-//
-//
-//                        if (i == 0 || i == size - 1 || j == 0 || j == size - 1) {
-//                            s.setType(Square.TYPE.WALL);
-//
-//                        }
-//
-//                        rect.add(s);
-//                        continue outer;
 
                         if (type == Square.TYPE.HOLE) {
                             col = s.gethType();
@@ -592,11 +660,6 @@ public class Maker extends PApplet {
 
             }
         }
-
-//        for(int i=0; i<size; i++) {
-//            for(int j=0; j<)
-//        }
-
     }
 
     private void saveFile() {
@@ -643,6 +706,22 @@ public class Maker extends PApplet {
             str.append("\n");
         }
 
+
+        for (String[] s : ballSettings) {
+            String string = "";
+
+            string += s[0] + ",";
+            string += "speed-" + s[1] + ",";
+            string += "posX-" + s[2] + ",";
+            string += "posY-" + s[3] + ",";
+            string += "velX-" + s[4] + ",";
+            string += "velY-" + s[5] + ",";
+            string += "color-" + s[6] + ",";
+
+
+            str.append(string).append("\n");
+        }
+
         System.out.println(str);
 
 
@@ -659,25 +738,64 @@ public class Maker extends PApplet {
 
     }
 
+    public static void fromGame(String path) {
+        PApplet.runSketch(new String[]{
+                "projector"
+        }, new Maker());
+    }
+
+    public void addBall() {
+        String[] settings = new String[7];
+
+        settings[0] = "static";
+        settings[1] = "4";
+        settings[2] = String.valueOf(ballX);
+        settings[3] = String.valueOf(ballY);
+        settings[4] = String.valueOf(xx);
+        settings[5] = String.valueOf(yy);
+        if (colors[colorCount].equals("NEUTRAL")) {
+            settings[6] = "blue";
+        } else {
+            settings[6] = colors[colorCount].toLowerCase();
+        }
+
+        ballSettings.add(settings);
+        surface.setSize(width, height + width / 20);
+
+        System.out.println(Arrays.toString(settings));
+    }
+
     public void keyPressed() {
 //        modeCount++;
 //        modeCount %= modes.length;
         if (keyCode == UP) {
             modeCount++;
-            modeCount %= modes.length;
         } else if (keyCode == DOWN) {
             modeCount--;
-            modeCount %= modes.length;
         } else if (keyCode == LEFT) {
             colorCount--;
-            colorCount %= colors.length;
         } else if (keyCode == RIGHT) {
             colorCount++;
-            colorCount %= colors.length;
         } else if (keyCode == ENTER) {
-            saveFile();
-            System.exit(0);
+            if (addBall) {
+                addBall = false;
+                addBall();
+            } else {
+                saveFile();
+                System.exit(0);
+            }
+        } else if (keyCode == 32) {
+            addBall = !addBall;
+        } else if (keyCode == 'R') {
+            rotation++;
+            if (rotation > 3) rotation = 0;
         }
+
+        if (modeCount < 0) modeCount = 6;
+        if (modeCount > 6) modeCount = 0;
+
+        if (colorCount < 0) colorCount = 5;
+        if (colorCount > 5) colorCount = 0;
     }
 
     public static void main(String[] args) {
