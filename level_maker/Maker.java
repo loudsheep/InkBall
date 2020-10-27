@@ -464,10 +464,12 @@ public class Maker extends PApplet {
     private ArrayList<String[]> ballSettings;
 
     private boolean addBall = false;
+    private boolean dynamicMode = false;    // when adding bal to spawner
     private int ballX = 1;
     private int ballY = 1;
     private int rotation = 0;
     private int xx, yy;
+    private int ballFrame = 10;
 
     public void settings() {
         size(800, 800);
@@ -522,23 +524,25 @@ public class Maker extends PApplet {
 
             String[] s = ballSettings.get(i);
 
-            int[] col = ballColor.get(Square.HoleType.valueOf(s[6].toUpperCase()));
+            if (s[0].equals("static")) {
+                int[] col = ballColor.get(Square.HoleType.valueOf(s[6].toUpperCase()));
 
-            stroke(col[0], col[1], col[2], 150);
-            fill(col[0], col[1], col[2], 150);
+                stroke(col[0], col[1], col[2], 150);
+                fill(col[0], col[1], col[2], 150);
 
-            float xxx = (Integer.parseInt(s[2]) + 1) * (width / (float) size) - (width / (float) size / 2);
-            float yyy = (Integer.parseInt(s[3]) + 1) * (width / (float) size) - (width / (float) size / 2);
+                float xxx = (Integer.parseInt(s[2]) + 1) * (width / (float) size) - (width / (float) size / 2);
+                float yyy = (Integer.parseInt(s[3]) + 1) * (width / (float) size) - (width / (float) size / 2);
 
-            ellipse(xxx, yyy, width / (float) size, width / (float) size);
+                ellipse(xxx, yyy, width / (float) size, width / (float) size);
 
-            stroke(0, 150);
+                stroke(0, 150);
 
-            line(xxx, yyy, xxx + (Integer.parseInt(s[4]) * 30), yyy + (Integer.parseInt(s[5]) * 30));
+                line(xxx, yyy, xxx + (Integer.parseInt(s[4]) * 30), yyy + (Integer.parseInt(s[5]) * 30));
 
-            fill(0);
-            textSize(12);
-            text(i + 1, xxx, yyy);
+                fill(0);
+                textSize(12);
+                text(i + 1, xxx, yyy);
+            }
         }
 
         if (addBall) {
@@ -555,27 +559,27 @@ public class Maker extends PApplet {
 //            float xx = rotation % 2 == 0 ? 0 : 1;
 //            float yy = rotation % 2 == 0 ? 1 : 0;
 
-            if (rotation == 0 || rotation == 2) {
-                xx = 0;
-            } else if (rotation == 1) {
-                xx = 1;
-            } else {
-                xx = -1;
+            if (!dynamicMode) {
+                if (rotation == 0 || rotation == 2) {
+                    xx = 0;
+                } else if (rotation == 1) {
+                    xx = 1;
+                } else {
+                    xx = -1;
+                }
+
+                if (rotation == 1 || rotation == 3) {
+                    yy = 0;
+                } else if (rotation == 2) {
+                    yy = -1;
+                } else {
+                    yy = 1;
+                }
+
+                stroke(0);
+                strokeWeight(3);
+                line(x, y, x + (xx * 30), y + (yy * 30));
             }
-
-            if (rotation == 1 || rotation == 3) {
-                yy = 0;
-            } else if (rotation == 2) {
-                yy = -1;
-            } else {
-                yy = 1;
-            }
-
-            stroke(0);
-            strokeWeight(3);
-            line(x, y, x + (xx * 30), y + (yy * 30));
-
-
         }
 
         strokeWeight(1);
@@ -585,48 +589,81 @@ public class Maker extends PApplet {
 
             String[] arr = ballSettings.get(i);
 
-            if (Integer.parseInt(arr[2]) >= size - 1) {
-                ballSettings.remove(i);
-                surface.setSize(width, (int) (height - width / 20f));
-                continue;
+            if (arr[0].equals("static")) {
+                if (Integer.parseInt(arr[2]) >= size - 1) {
+                    ballSettings.remove(i);
+                    surface.setSize(width, (int) (height - width / 20f));
+                    continue;
+                }
+
+                if (Integer.parseInt(arr[3]) >= size - 1) {
+                    ballSettings.remove(i);
+                    surface.setSize(width, (int) (height - width / 20f));
+                    continue;
+                }
+
+                float y = originalHeight + (i * width / 20f) + width / 20f / 2;
+
+                stroke(0);
+                noFill();
+
+                rect(0, originalHeight + (i * width / 20f), width, width / 20f);
+
+                stroke(255, 0, 0);
+                fill(255, 0, 0, 50);
+                rect(width / 10f * 9, originalHeight + (i * width / 20f), width / 10f, width / 20f);
+
+                textSize(12);
+                fill(255, 0, 0);
+                text("Delete", (float) (width / 10 * 9.25), y + 6);
+
+
+                int[] c = ballColor.get(Square.HoleType.valueOf(arr[6].toUpperCase()));
+
+                stroke(c[0], c[1], c[2]);
+                fill(c[0], c[1], c[2]);
+
+
+                ellipse(width / 20f, y, 20, 20);
+
+                fill(0);
+
+                textSize(20);
+
+                text("Position: " + arr[2] + "x" + arr[3], width / 20f * 3, y + 10);
+                text(i + 1, width / 20f / 3, y + 10);
+            } else {
+
+                float y = originalHeight + (i * width / 20f) + width / 20f / 2;
+
+                stroke(0);
+                noFill();
+
+                rect(0, originalHeight + (i * width / 20f), width, width / 20f);
+
+                stroke(255, 0, 0);
+                fill(255, 0, 0, 50);
+                rect(width / 10f * 9, originalHeight + (i * width / 20f), width / 10f, width / 20f);
+
+                textSize(12);
+                fill(255, 0, 0);
+                text("Delete", (float) (width / 10 * 9.25), y + 6);
+
+
+                int[] c = ballColor.get(Square.HoleType.valueOf(arr[2].toUpperCase()));
+
+                stroke(c[0], c[1], c[2]);
+                fill(c[0], c[1], c[2]);
+
+                ellipse(width / 20f, y, 20, 20);
+
+                fill(0);
+
+                textSize(20);
+
+                text("Frame: " + arr[3] + "~" + Integer.parseInt(arr[3]) / 60f + "s", width / 20f * 3, y + 10);
+                text(i + 1, width / 20f / 3, y + 10);
             }
-
-            if (Integer.parseInt(arr[3]) >= size - 1) {
-                ballSettings.remove(i);
-                surface.setSize(width, (int) (height - width / 20f));
-                continue;
-            }
-
-            float y = originalHeight + (i * width / 20f) + width / 20f / 2;
-
-            stroke(0);
-            noFill();
-
-            rect(0, originalHeight + (i * width / 20f), width, width / 20f);
-
-            stroke(255, 0, 0);
-            fill(255, 0, 0, 50);
-            rect(width / 10 * 9, originalHeight + (i * width / 20f), width / 10, width / 20);
-
-            textSize(12);
-            fill(255, 0, 0);
-            text("Delete", (float) (width / 10 * 9.25), y + 6);
-
-
-            int[] c = ballColor.get(Square.HoleType.valueOf(arr[6].toUpperCase()));
-
-            stroke(c[0], c[1], c[2]);
-            fill(c[0], c[1], c[2]);
-
-
-            ellipse(width / 20f, y, 20, 20);
-
-            fill(0);
-
-            textSize(20);
-
-            text("Position: " + arr[2] + "x" + arr[3], width / 20f * 3, y + 10);
-            text(i + 1, width / 20f / 3, y + 10);
         }
 
 
@@ -649,7 +686,10 @@ public class Maker extends PApplet {
         if (addBall) {
             fill(255, 0, 0);
             textSize(25);
-            text("BALL SETTINGS", 100, 20);
+            if (dynamicMode)
+                text("BALL SETTINGS - DYNAMIC - FRAME " + ballFrame + "(" + ballFrame / 60f + "s)", 100, 20);
+            else
+                text("BALL SETTINGS - STATIC", 100, 20);
         }
 
         if (mousePressed) {
@@ -666,7 +706,7 @@ public class Maker extends PApplet {
                 }
             } else {
                 ballX = (int) (mouseX / (float) width * size);
-                ballY = (int) (mouseY / (float) height * size);
+                ballY = (int) (mouseY / (float) width * size);
 
                 if (ballX < 1) ballX = 1;
                 if (ballX > size - 2) ballX = size - 2;
@@ -807,12 +847,18 @@ public class Maker extends PApplet {
             String string = "";
 
             string += s[0] + ",";
-            string += "speed=" + s[1] + ",";
-            string += "posX=" + s[2] + ",";
-            string += "posY=" + s[3] + ",";
-            string += "velX=" + s[4] + ",";
-            string += "velY=" + s[5] + ",";
-            string += "color=" + s[6] + ",";
+            if (s[0].equals("static")) {
+                string += "speed=" + s[1] + ",";
+                string += "posX=" + s[2] + ",";
+                string += "posY=" + s[3] + ",";
+                string += "velX=" + s[4] + ",";
+                string += "velY=" + s[5] + ",";
+                string += "color=" + s[6] + ",";
+            } else {
+                string += "speed=" + s[1] + ",";
+                string += "color=" + s[2] + ",";
+                string += "frame=" + s[3] + ",";
+            }
 
 
             str.append(string).append("\n");
@@ -841,36 +887,63 @@ public class Maker extends PApplet {
     }
 
     public void addBall() {
-        String[] settings = new String[7];
+        if (dynamicMode) {
+            String[] settings = new String[4];
 
-        settings[0] = "static";
-        settings[1] = "4";
-        settings[2] = String.valueOf(ballX);
-        settings[3] = String.valueOf(ballY);
-        settings[4] = String.valueOf(xx);
-        settings[5] = String.valueOf(yy);
-        if (colors[colorCount].equals("NEUTRAL")) {
-            settings[6] = "blue";
+            settings[0] = "dynamic";
+            settings[1] = "4";
+            if (colors[colorCount].equals("NEUTRAL")) {
+                settings[2] = "blue";
+            } else {
+                settings[2] = colors[colorCount].toLowerCase();
+            }
+
+            settings[3] = String.valueOf(ballFrame);
+
+            ballSettings.add(settings);
+            surface.setSize(width, height + width / 20);
+
+            System.out.println(Arrays.toString(settings));
         } else {
-            settings[6] = colors[colorCount].toLowerCase();
+            String[] settings = new String[7];
+
+            settings[0] = "static";
+            settings[1] = "4";
+            settings[2] = String.valueOf(ballX);
+            settings[3] = String.valueOf(ballY);
+            settings[4] = String.valueOf(xx);
+            settings[5] = String.valueOf(yy);
+            if (colors[colorCount].equals("NEUTRAL")) {
+                settings[6] = "blue";
+            } else {
+                settings[6] = colors[colorCount].toLowerCase();
+            }
+
+            ballSettings.add(settings);
+            surface.setSize(width, height + width / 20);
+
+            System.out.println(Arrays.toString(settings));
         }
-
-        ballSettings.add(settings);
-        surface.setSize(width, height + width / 20);
-
-        System.out.println(Arrays.toString(settings));
 
         ballX = 1;
         ballY = 1;
+        dynamicMode = false;
+        ballFrame = 10;
     }
 
     public void keyPressed() {
 //        modeCount++;
 //        modeCount %= modes.length;
         if (keyCode == UP) {
-            modeCount++;
+            if (!dynamicMode)
+                modeCount++;
+            else
+                ballFrame += 10;
         } else if (keyCode == DOWN) {
-            modeCount--;
+            if (!dynamicMode)
+                modeCount--;
+            else
+                ballFrame -= 10;
         } else if (keyCode == LEFT) {
             colorCount--;
         } else if (keyCode == RIGHT) {
@@ -886,8 +959,10 @@ public class Maker extends PApplet {
         } else if (keyCode == 32) {
             addBall = !addBall;
         } else if (keyCode == 'R') {
-            rotation++;
-            if (rotation > 3) rotation = 0;
+            rotation--;
+            if (rotation < 0) rotation = 3;
+        } else if (keyCode == 'M') {
+            dynamicMode = !dynamicMode;
         }
 
         if (modeCount < 0) modeCount = 6;
