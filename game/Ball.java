@@ -190,7 +190,6 @@ public class Ball {
 
             if (edgeCollision(s)) return;
 
-
         }
     }
 
@@ -288,6 +287,12 @@ public class Ball {
 //            }
 //        }
 
+        if (pos.x >= s.getPosX() && pos.x <= s.getPosX() + s.getW()) {
+            if (pos.y >= s.getPosY() && pos.y <= s.getPosY() + s.getH()) { // we're inside one way block
+                return true;
+            }
+        }
+
         if (pos.y + radius >= s.getPosY() && pos.y < (s.getPosY() + rad) && pos.x >= s.getPosX() && pos.x <= (s.getPosX() + s.getW())) { // up side collision
             System.out.println("up");
             if (s.getType() == Square.TYPE.ONE_WAY_UP) {
@@ -332,11 +337,7 @@ public class Ball {
             return true;
         }
 
-        if (pos.x >= s.getPosX() && pos.x <= s.getPosX() + s.getW()) {
-            if (pos.y >= s.getPosY() && pos.y <= s.getPosY() + s.getH()) { // we're inside one way block
-                return true;
-            }
-        }
+
 
 
         return false;

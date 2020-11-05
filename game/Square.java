@@ -47,7 +47,6 @@ public class Square {
     private TYPE type;
 
     private PApplet sketch;
-    private PImage img;
     private boolean main_hole;
     private HoleType hType = null;
     public float attractionR;
@@ -293,7 +292,6 @@ public class Square {
     public void setSketch(PApplet sketch) {
         this.sketch = sketch;
         if (hType != null) {
-            img = sketch.loadImage("img/hole_" + hType.toString().toLowerCase() + ".bmp");
         }
     }
 

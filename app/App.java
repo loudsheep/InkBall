@@ -6,7 +6,6 @@ import processing.core.PApplet;
 import reader.MapFromFile;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -129,8 +128,10 @@ public class App extends PApplet {
                 if (game.waiting.size() != 0) {
                     int i = 1;
 
-                    for (Ball b : game.waiting.keySet()) {
+                    //for (Ball b : game.wait.values()) {
+                    for (int j : game.waiting.keySet()) {
 
+                        Ball b = game.waiting.get(j);
 
                         int y = -panelHeight / 2;
                         int r = panelHeight / 2 - 1;
@@ -142,8 +143,15 @@ public class App extends PApplet {
 
                         int[] c = b.getColorArray();
 
-                        fill(c[0], c[1], c[2]);
-                        ellipse(x, y, r, r);
+                        if (j - 60 < game.getGameFrame()) {
+                            if (game.getGameFrame() % 20 < 10) {
+                                fill(c[0], c[1], c[2]);
+                                ellipse(x, y, r, r);
+                            }
+                        } else {
+                            fill(c[0], c[1], c[2]);
+                            ellipse(x, y, r, r);
+                        }
 
 
                         i++;

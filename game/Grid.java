@@ -3,9 +3,7 @@ package game;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.HashMap;
+import java.util.*;
 
 public class Grid {
 
@@ -18,7 +16,7 @@ public class Grid {
     private PApplet sketch;
     private ArrayList<Square> grid;
     public ArrayList<Ball> balls;
-    public HashMap<Ball, Integer> waiting;
+    public TreeMap<Integer, Ball> waiting;
 
     private LineHandler lh;
 
@@ -30,7 +28,7 @@ public class Grid {
 
         grid = new ArrayList<>();
         balls = new ArrayList<>();
-        waiting = new HashMap<>();
+        waiting = new TreeMap<>();
 
         this.lh = null;
     }
@@ -92,11 +90,11 @@ public class Grid {
         }
 
         if (waiting.size() != 0) {
-            for (Ball b : waiting.keySet()) {
-                if (waiting.get(b) < gameFrame) {
-                    b.setSketch(sketch);
-                    balls.add(b);
-                    waiting.remove(b);
+            for (int i : waiting.keySet()) {
+                if (i < gameFrame) {
+                    waiting.get(i).setSketch(sketch);
+                    balls.add(waiting.get(i));
+                    waiting.remove(i);
                     break;
                 }
             }
@@ -141,7 +139,7 @@ public class Grid {
 
         Square rand = spawners.get((int) (Math.random() * spawners.size()));
 
-        waiting.put(new Ball(rand.getPosX() + rand.getW() / 2f, rand.getPosY() + rand.getH() / 2f, speed, radius, c), frame);
+        waiting.put(frame, new Ball(rand.getPosX() + rand.getW() / 2f, rand.getPosY() + rand.getH() / 2f, speed, radius, c));
     }
 
     public void addBall(Ball ball, int frame) {

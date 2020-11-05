@@ -40,9 +40,6 @@ public class Maker extends PApplet {
         ballColor.put(Square.HoleType.NEUTRAL, new int[]{73, 82, 214});
     }
 
-    //public final PImage img = loadImage("img/hole_blue.bmp");
-
-
     public static class Square {
 
         public void setType(TYPE wall) {

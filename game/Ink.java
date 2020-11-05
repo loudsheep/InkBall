@@ -20,7 +20,7 @@ public class Ink {
 
             angle = PApplet.atan2(start.y - end.y, start.x - end.x);
 
-            len = PApplet.dist(start.x, start.y, end.x, end.y);
+            len = start.dist(end);
         }
 
     }
@@ -38,14 +38,14 @@ public class Ink {
     }
 
 
-    public void append(int mouseX, int mouseY, int pmouseX,int pmouseY) {
+    public void append(int mouseX, int mouseY, int pmouseX, int pmouseY) {
         line.add(new Line(new PVector(mouseX, mouseY), new PVector(pmouseX, pmouseY)));
     }
 
 
     public void show() {
         sketch.stroke(0);
-        sketch.strokeWeight(5);
+        sketch.strokeWeight(r);
 
         sketch.fill(0);
         for (Line p : line) {
