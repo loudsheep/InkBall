@@ -19,7 +19,7 @@ public class LineHandler {
 
     public void draw(int mouseX, int mouseY, int pmouseX, int pmouseY) {
         if (!drawing) return;
-        if (mouseX <= 0 || mouseY <= 0) return;
+        if (mouseX < 0 || mouseY < 0) return;
         if (!(mouseX == pmouseX && mouseY == pmouseY)) newLine.append(mouseX, mouseY, pmouseX, pmouseY);
 
 
@@ -30,7 +30,10 @@ public class LineHandler {
         drawing = true;
         lines.add(new Ink(sketch));
         newLine = lines.get(lines.size() - 1);
-        newLine.append(mouseX, mouseY, pmouseX, pmouseY);
+
+        if (mouseX >= 0 && mouseY >= 0) {
+            newLine.append(mouseX, mouseY, pmouseX, pmouseY);
+        }
     }
 
     public void stopDraw() {

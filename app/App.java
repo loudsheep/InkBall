@@ -17,7 +17,7 @@ public class App extends PApplet {
     int panelHeight;
 
     Button start;
-    Button exit;
+    Button pauseButton;
     Button reset;
     Button next;
     Button prev;
@@ -53,10 +53,10 @@ public class App extends PApplet {
         start.setStrokeColor(new Color(0, 0, 0));
         start.setFillColor(new Color(255, 255, 255));
         start.setTextColor(new Color(0, 0, 0));
-
-        exit = new Button(this, "Quit", height / 30, width / 4, height / 5 * 3, width / 2, height / 10);
         start.setAction(this::startGame);
-        exit.setAction(this::end);
+
+        pauseButton = new Button(this, "Quit", height / 30, width / 4, height / 5 * 3, width / 2, height / 10);
+        pauseButton.setAction(this::end);
 
         reset = new Button(this, "Restart", height / 60, width - (width / 8 * 2), -panelHeight, width / 8, panelHeight);
         reset.setAction(this::reset);
@@ -75,11 +75,11 @@ public class App extends PApplet {
         editor.setAction(this::openInEditor);
         editor.setActive(false);
 
-        quitPause = new Button(this, "Quit", height / 30, width / 4, height / 5 * 3, width / 2, height / 10);
+        quitPause = new Button(this, "Quit", height / 30, width / 4, (int) (height / 5 * 2.5), width / 2, height / 10);
         quitPause.setAction(this::end);
         quitPause.setActive(false);
 
-        resumePause = new Button(this, "Resume", height / 30, width / 4, height / 5, width / 2, height / 10);
+        resumePause = new Button(this, "Resume", height / 30, width / 4, (int) (height / 5 * 1.5), width / 2, height / 10);
         resumePause.setAction(this::togglePause);
         resumePause.setActive(false);
 
@@ -116,7 +116,12 @@ public class App extends PApplet {
     }
 
     public void draw() {
-        background(220);
+        if (pause) {
+            background(220, 250);
+            filter(BLUR);
+        } else {
+            background(220);
+        }
         translate(0, panelHeight);
 
         if (!pause) {
@@ -168,7 +173,7 @@ public class App extends PApplet {
 
             }
 
-            exit.show();
+            pauseButton.show();
             reset.show();
             next.show();
             start.show();
@@ -178,6 +183,16 @@ public class App extends PApplet {
 
             text(frameRate, 10, 10);
         } else {
+
+            if (gameStarted) {
+                game.show();
+
+                noStroke();
+                fill(220, 175);
+                rect(0, -panelHeight, width, height + panelHeight);
+            }
+
+            fill(0);
             textSize(width / 10f);
             float w = textWidth("Pause");
             text("Pause", width / 2 - w / 2, height / 2 - width / 3f);
@@ -186,6 +201,7 @@ public class App extends PApplet {
             resumePause.show();
         }
 
+
     }
 
     public void mousePressed() {
@@ -193,7 +209,7 @@ public class App extends PApplet {
 
         start.clicked(mouseX, mouseY - panelHeight);
         reset.clicked(mouseX, mouseY - panelHeight);
-        exit.clicked(mouseX, mouseY - panelHeight);
+        pauseButton.clicked(mouseX, mouseY - panelHeight);
         next.clicked(mouseX, mouseY - panelHeight);
         prev.clicked(mouseX, mouseY - panelHeight);
         //editor.clicked(mouseX, mouseY - panelHeight);
@@ -206,7 +222,7 @@ public class App extends PApplet {
 
         start.released(mouseX, mouseY - panelHeight);
         reset.released(mouseX, mouseY - panelHeight);
-        exit.released(mouseX, mouseY - panelHeight);
+        pauseButton.released(mouseX, mouseY - panelHeight);
         next.released(mouseX, mouseY - panelHeight);
         prev.released(mouseX, mouseY - panelHeight);
         //editor.released(mouseX, mouseY - panelHeight);
@@ -220,8 +236,8 @@ public class App extends PApplet {
         gameStarted = true;
 
         start.setActive(false);
-        exit = new Button(this, "Quit", height / 60, width - width / 8, -panelHeight, width / 8, panelHeight);
-        exit.setAction(this::end);
+        pauseButton = new Button(this, "Pause", height / 60, width - width / 8, -panelHeight, width / 8, panelHeight);
+        pauseButton.setAction(this::togglePause);
 
         reset.setActive(true);
         next.setActive(true);
@@ -264,7 +280,8 @@ public class App extends PApplet {
     }
 
     public void keyPressed() {
-        if (keyCode == 'P') {
+        if (keyCode == 27) {
+            key = 0;
             if (gameStarted) {
                 System.out.println("pause ----------------------------------------------------------------");
                 togglePause();
@@ -282,18 +299,21 @@ public class App extends PApplet {
             quitPause.setActive(true);
             resumePause.setActive(true);
 
-            exit.setActive(false);
+            pauseButton.setActive(false);
             reset.setActive(false);
             next.setActive(false);
             prev.setActive(false);
+            frameRate(10);
         } else {
             quitPause.setActive(false);
             resumePause.setActive(false);
 
-            exit.setActive(true);
+            pauseButton.setActive(true);
             reset.setActive(true);
             next.setActive(true);
             prev.setActive(true);
+
+            frameRate(60);
         }
     }
 
