@@ -148,8 +148,13 @@ public class App extends PApplet {
 
                         int[] c = b.getColorArray();
 
-                        if (j - 60 < game.getGameFrame()) {
-                            if (game.getGameFrame() % 20 < 10) {
+                        if (j >= 0) {
+                            if (j - 60 < game.getGameFrame()) {
+                                if (game.getGameFrame() % 20 < 10) {
+                                    fill(c[0], c[1], c[2]);
+                                    ellipse(x, y, r, r);
+                                }
+                            } else {
                                 fill(c[0], c[1], c[2]);
                                 ellipse(x, y, r, r);
                             }

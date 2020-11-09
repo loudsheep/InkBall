@@ -318,7 +318,7 @@ public class Square {
             if (b == ball) {
                 //System.out.println("wrong -> o: "+b.getRadius() + " -- notO: " + ball.getRadius());
                 grid.balls.remove(b);
-                grid.addBall(ball, grid.getGameFrame() + 50);
+                grid.addBall(ball, grid.getGameFrame() + 60);
                 return;
             }
         }

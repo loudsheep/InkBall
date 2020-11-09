@@ -398,8 +398,6 @@ public class Maker extends PApplet {
             }
         }
 
-        //TODO Do this holes making !!!
-
         public void makeHole(ArrayList<Square> sq, String color) {
             //System.out.println("make hole");
             if (i > 0 && j > 0 && i < maxI - 2 && j < maxJ - 2) { // we can make hole !!!

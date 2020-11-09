@@ -91,6 +91,7 @@ public class Grid {
 
         if (waiting.size() != 0) {
             for (int i : waiting.keySet()) {
+                if (i < 0) continue;
                 if (i < gameFrame) {
                     waiting.get(i).setSketch(sketch);
                     balls.add(waiting.get(i));
@@ -135,7 +136,10 @@ public class Grid {
             if (s.getType() == Square.TYPE.SPAWN) spawners.add(s);
         }
 
-        if (spawners.size() == 0) return;
+        if (spawners.size() == 0) {
+            waiting.put(-(waiting.size() + 1), new Ball(0, 0, speed, radius, c));
+            return;
+        }
 
         Square rand = spawners.get((int) (Math.random() * spawners.size()));
 
