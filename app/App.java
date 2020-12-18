@@ -186,7 +186,7 @@ public class App extends PApplet {
             //editor.show();
 
 
-            text(frameRate, 10, 10);
+//            text(frameRate, 10, 10);
         } else {
 
             if (gameStarted) {

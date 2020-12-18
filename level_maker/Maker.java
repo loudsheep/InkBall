@@ -1,5 +1,6 @@
 package level_maker;
 
+import app.App;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.event.MouseEvent;
@@ -860,6 +861,10 @@ public class Maker extends PApplet {
         }
 
         System.out.println(str);
+
+        PApplet.runSketch(new String[]{"--display=1",
+                "--location=0,0",
+                "App" }, new App());
 
 
 //        File file = new File("levels\\level" + num);

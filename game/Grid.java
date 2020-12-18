@@ -120,8 +120,8 @@ public class Grid {
         }
         lh.show();
 
-        sketch.textSize(w / (float) squaresX / 3f);
-        sketch.text(gameFrame, 20, 20);
+//        sketch.textSize(w / (float) squaresX / 3f);
+//        sketch.text(gameFrame, 20, 20);
     }
 
     public void addBall(float speed, float radius, Ball.COLOR c) {
