@@ -3,7 +3,6 @@ package app;
 import game.Ball;
 import game.Grid;
 import gui.Button;
-import gui.CheckBox;
 import gui.Color;
 import processing.core.PApplet;
 import reader.MapFromFile;
@@ -35,9 +34,6 @@ public class App extends PApplet {
 
     boolean pause;
 
-    CheckBox box;
-
-
     boolean gameStarted = false;
 
     int level = 0;
@@ -48,11 +44,6 @@ public class App extends PApplet {
     }
 
     public void setup() {
-
-        box = new CheckBox(this, 100, 100, 10, false);
-        box.setAction((x) -> {
-        });
-
         pause = false;
 
         surface.setTitle("Ink Ball");
@@ -193,7 +184,6 @@ public class App extends PApplet {
             start.show();
             prev.show();
 
-            box.show();
             //editor.show();
 
 
@@ -231,7 +221,6 @@ public class App extends PApplet {
         //editor.clicked(mouseX, mouseY - panelHeight);
         quitPause.clicked(mouseX, mouseY - panelHeight);
         resumePause.clicked(mouseX, mouseY - panelHeight);
-        box.clicked(mouseX, mouseY - panelHeight);
     }
 
     public void mouseReleased() {
@@ -245,9 +234,6 @@ public class App extends PApplet {
         //editor.released(mouseX, mouseY - panelHeight);
         quitPause.released(mouseX, mouseY - panelHeight);
         resumePause.released(mouseX, mouseY - panelHeight);
-        box.released(mouseX, mouseY - panelHeight);
-
-
     }
 
     public void startGame() {

@@ -14,8 +14,6 @@ public class CheckBox extends Element {
     private Action action;
 
     private boolean state;
-    private boolean clicked = false;
-    private boolean active = true;
 
     private Color strokeColor = new Color(0, 0, 0);
     private Color fillColor = new Color(255, 255, 255);
@@ -52,14 +50,14 @@ public class CheckBox extends Element {
         }
     }
 
-    public void clicked(int mouseX, int mouseY) {
+    public void clicked(float mouseX, float mouseY) {
         if (!active) return;
         if (mouseX >= pos.x && mouseX <= pos.x + width) {
             if (mouseY >= pos.y && mouseY <= pos.y + width) clicked = true;
         }
     }
 
-    public void released(int mouseX, int mouseY) {
+    public void released(float mouseX, float mouseY) {
         if (!active) return;
         if (mouseX >= pos.x && mouseX <= pos.x + width) {
             if (mouseY >= pos.y && mouseY <= pos.y + width) {

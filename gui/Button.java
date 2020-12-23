@@ -18,9 +18,6 @@ public class Button extends Element {
 
     private Action action = null;
 
-    private boolean clicked = false;
-    private boolean active = true;
-
     private Color strokeColor = new Color(0, 0, 0);
     private Color fillColor = new Color(255, 255, 255);
     private Color textColor = new Color(0, 0, 0);
@@ -70,14 +67,14 @@ public class Button extends Element {
         }
     }
 
-    public void clicked(int mouseX, int mouseY) {
+    public void clicked(float mouseX, float mouseY) {
         if (!active) return;
         if (mouseX >= pos.x && mouseX <= pos.x + width) {
             if (mouseY >= pos.y && mouseY <= pos.y + height) clicked = true;
         }
     }
 
-    public void released(int mouseX, int mouseY) {
+    public void released(float mouseX, float mouseY) {
         if (!active) return;
         if (mouseX >= pos.x && mouseX <= pos.x + width) {
             if (mouseY >= pos.y && mouseY <= pos.y + height) {
