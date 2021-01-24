@@ -34,6 +34,7 @@ public class App extends PApplet {
 
     boolean pause;
 
+
     boolean gameStarted = false;
 
     int level = 0;
@@ -44,6 +45,7 @@ public class App extends PApplet {
     }
 
     public void setup() {
+
         pause = false;
 
         surface.setTitle("Ink Ball");
@@ -183,7 +185,6 @@ public class App extends PApplet {
             next.show();
             start.show();
             prev.show();
-
             //editor.show();
 
 
@@ -234,6 +235,8 @@ public class App extends PApplet {
         //editor.released(mouseX, mouseY - panelHeight);
         quitPause.released(mouseX, mouseY - panelHeight);
         resumePause.released(mouseX, mouseY - panelHeight);
+
+
     }
 
     public void startGame() {

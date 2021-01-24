@@ -24,15 +24,11 @@ public class Button extends Element {
     private Color clickedColor = new Color(230, 230, 230);
 
     public Button(PApplet sketch, String text, int textSize, int x, int y, int w, int h) {
-        this.sketch = sketch;
-        pos = new PVector(x, y);
-
+        super(sketch, x, y);
         width = w;
         height = h;
-
         this.text = text;
         this.textSize = textSize;
-
     }
 
     public void show() {
@@ -59,7 +55,6 @@ public class Button extends Element {
 
         sketch.text(text, x, y);
     }
-
 
     private void action() {
         if (action != null) {
@@ -89,14 +84,6 @@ public class Button extends Element {
 
     public void setAction(Action action) {
         this.action = action;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public void setStrokeColor(Color strokeColor) {

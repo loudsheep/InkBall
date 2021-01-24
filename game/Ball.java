@@ -197,30 +197,30 @@ public class Ball {
             return false;
         }
 
-        if (pos.y + radius >= s.getPosY() && pos.y < s.getPosY() + s.getH() && pos.x >= s.getPosX() && pos.x <= s.getPosX() + s.getW()) { // up side collision
+        if (pos.y + rad >= s.getPosY() && pos.y < s.getPosY() + s.getH() && pos.x >= s.getPosX() && pos.x <= s.getPosX() + s.getW()) { // up side collision
             vel.y = -vel.y;
-            pos.y = s.getPosY() - radius;
+            pos.y = s.getPosY() - rad;
 
             return true;
         }
 
-        if (pos.y - radius <= s.getPosY() + s.getH() && pos.y > s.getPosY() && pos.x >= s.getPosX() && pos.x <= s.getPosX() + s.getW()) { // down side collision
+        if (pos.y - rad <= s.getPosY() + s.getH() && pos.y > s.getPosY() && pos.x >= s.getPosX() && pos.x <= s.getPosX() + s.getW()) { // down side collision
             vel.y = -vel.y;
-            pos.y = s.getPosY() + s.getH() + radius;
+            pos.y = s.getPosY() + s.getH() + rad;
 
             return true;
         }
 
-        if (pos.x + radius >= s.getPosX() && pos.x < s.getPosX() + s.getW() && pos.y >= s.getPosY() && pos.y <= s.getPosY() + s.getH()) { // left side collision
+        if (pos.x + rad >= s.getPosX() && pos.x < s.getPosX() + s.getW() && pos.y >= s.getPosY() && pos.y <= s.getPosY() + s.getH()) { // left side collision
             vel.x = -vel.x;
-            pos.x = s.getPosX() - radius;
+            pos.x = s.getPosX() - rad;
 
             return true;
         }
 
-        if (pos.x - radius <= s.getPosX() + s.getW() && pos.x > s.getPosX() && pos.y >= s.getPosY() && pos.y <= s.getPosY() + s.getH()) { // right side collision
+        if (pos.x - rad <= s.getPosX() + s.getW() && pos.x > s.getPosX() && pos.y >= s.getPosY() && pos.y <= s.getPosY() + s.getH()) { // right side collision
             vel.x = -vel.x;
-            pos.x = s.getPosX() + s.getW() + radius;
+            pos.x = s.getPosX() + s.getW() + rad;
 
             return true;
         }
@@ -245,7 +245,7 @@ public class Ball {
 
             PVector dist = new PVector(pos.x - nearestX, pos.y - nearestY);
 
-            if (dist.mag() < radius && (nearestX == s.getPosX() || nearestX == s.getPosX() + s.getW() || nearestY == s.getPosY() || nearestY == s.getPosY() + s.getH())) { // collision for edges
+            if (dist.mag() < rad && (nearestX == s.getPosX() || nearestX == s.getPosX() + s.getW() || nearestY == s.getPosY() || nearestY == s.getPosY() + s.getH())) { // collision for edges
 
                 System.out.println("new collision =============================="); // debug
 
@@ -258,7 +258,7 @@ public class Ball {
 
                 vel = vel.rotate(2 * theta);
 
-                while (dist.mag() < radius) {
+                while (dist.mag() < rad) {
                     move();
                     nearestX = PApplet.max(s.getPosX(), PApplet.min(pos.x, s.getPosX() + s.getW()));
                     nearestY = PApplet.max(s.getPosY(), PApplet.min(pos.y, s.getPosY() + s.getH()));

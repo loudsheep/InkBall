@@ -10,9 +10,7 @@ public class CheckBox extends Element {
     }
 
     private int width;
-
     private Action action;
-
     private boolean state;
 
     private Color strokeColor = new Color(0, 0, 0);
@@ -20,8 +18,7 @@ public class CheckBox extends Element {
     private Color checkColor = new Color(0, 0, 0);
 
     public CheckBox(PApplet sketch, int x, int y, int w, boolean state) {
-        this.sketch = sketch;
-        this.pos = new PVector(x, y);
+        super(sketch, x, y);
         this.width = w;
         this.state = state;
     }
@@ -45,15 +42,17 @@ public class CheckBox extends Element {
 
     public void action() {
         if (action != null) {
-            state = !state;
             action.actionPerformed(state);
         }
+        state = !state;
     }
 
     public void clicked(float mouseX, float mouseY) {
         if (!active) return;
         if (mouseX >= pos.x && mouseX <= pos.x + width) {
-            if (mouseY >= pos.y && mouseY <= pos.y + width) clicked = true;
+            if (mouseY >= pos.y && mouseY <= pos.y + width) {
+                clicked = true;
+            }
         }
     }
 
@@ -63,23 +62,15 @@ public class CheckBox extends Element {
             if (mouseY >= pos.y && mouseY <= pos.y + width) {
                 if (clicked) {
                     action();
+
                 }
             }
         }
-
         clicked = false;
-    }
-
-    public boolean isActive() {
-        return active;
     }
 
     public void setAction(Action action) {
         this.action = action;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public void setStrokeColor(Color strokeColor) {

@@ -1,6 +1,7 @@
 package app.scene;
 
 import app.App;
+import app.Test;
 import game.Ball;
 import game.Grid;
 import gui.Button;
@@ -19,14 +20,11 @@ public class LevelScene extends Scene {
     int level = 0;
     boolean pause;
     boolean gameStarted = true;
-    int width, height;
-    int panelHeight;
 
     Button next;
     Button prev;
     Button reset;
     Button pauseButton;
-    Button editor;
     Button quitPause;       // quit button, only active when pause == true
     Button resumePause;     // resume button, only active when pause == true
 
@@ -34,67 +32,26 @@ public class LevelScene extends Scene {
     Grid game;
 
     public LevelScene(PApplet sketch, int width, int height, int panelHeight) {
-        super(sketch);
-        this.width = width;
-        this.height = height;
-        this.panelHeight = panelHeight;
+        super(sketch, width, height, panelHeight);
 
-        System.out.println("this is level");
 
-        pauseButton = new Button(sketch, "Quit", height / 30, width / 4, height / 5 * 3, width / 2, height / 10);
-        pauseButton.setAction(this::endGame);
+//        String path = App.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+//        String decodedPath = URLDecoder.decode(path, StandardCharsets.UTF_8);
+//        String[] arr = decodedPath.split("/");
+//        levelPath = "";
+//        for (int i = 1; i < arr.length - 1; i++) {
+//            levelPath += "/" + arr[i];
+//        }
+//        levelPath += "/";
+//        System.out.println(levelPath);
+//
+//        if (!(App.class.getResource("App.class").toString().split(":")[0].equals("jar"))) {
+//            System.out.println("not jar -- " + Arrays.toString(App.class.getResource("App.class").toString().split(":")));
+//        } else {
+//            System.out.println("jar");
+//        }
 
-        reset = new Button(sketch, "Restart", height / 60, width - (width / 8 * 2), -panelHeight, width / 8, panelHeight);
-        reset.setAction(this::resetLevel);
-        reset.setActive(false);
 
-        next = new Button(sketch, "Next level", height / 60, width - (width / 8 * 3), -panelHeight, width / 8, panelHeight);
-        next.setAction(this::nextLevel);
-        next.setActive(false);
-
-        prev = new Button(sketch, "Previous level", height / 60, width - (width / 8 * 4), -panelHeight, width / 8, panelHeight);
-        prev.setAction(this::prevLevel);
-        prev.setActive(false);
-
-        editor = new Button(sketch, "Open in Level Editor", height / 60, width - (width / 8 * 6), -panelHeight, width / 8 * 2, panelHeight);
-        editor.setAction(this::openInEditor);
-        editor.setActive(false);
-
-        quitPause = new Button(sketch, "Quit", height / 30, width / 4, (int) (height / 5 * 2.5), width / 2, height / 10);
-        quitPause.setAction(this::endGame);
-        quitPause.setActive(false);
-
-        resumePause = new Button(sketch, "Resume", height / 30, width / 4, (int) (height / 5 * 1.5), width / 2, height / 10);
-        resumePause.setAction(this::togglePause);
-        resumePause.setActive(false);
-
-        String path = App.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        String decodedPath = URLDecoder.decode(path, StandardCharsets.UTF_8);
-        String[] arr = decodedPath.split("/");
-        levelPath = "";
-        for (int i = 1; i < arr.length - 1; i++) {
-            levelPath += "/" + arr[i];
-        }
-        levelPath += "/";
-        System.out.println(levelPath);
-
-        if (!(App.class.getResource("App.class").toString().split(":")[0].equals("jar"))) {
-            System.out.println("not jar -- " + Arrays.toString(App.class.getResource("App.class").toString().split(":")));
-        } else {
-            System.out.println("jar");
-        }
-
-        File f = new File(levelPath + "levels/level" + level + ".map");
-
-        if (f.exists()) {
-            MapFromFile file = new MapFromFile(levelPath + "levels/level" + level + ".map", width, height);
-            System.out.println("loaded level 1");
-
-            game = file.generate();
-            game.setAll(sketch);
-        }
-
-        startGame();
     }
 
     public void togglePause() {
@@ -111,7 +68,7 @@ public class LevelScene extends Scene {
             reset.setActive(false);
             next.setActive(false);
             prev.setActive(false);
-            sketch.frameRate(10);
+            sketch.frameRate(config.pauseFps);
         } else {
             quitPause.setActive(false);
             resumePause.setActive(false);
@@ -121,26 +78,12 @@ public class LevelScene extends Scene {
             next.setActive(true);
             prev.setActive(true);
 
-            sketch.frameRate(60);
+            sketch.frameRate(config.fps);
         }
     }
 
     private void openInEditor() {
 
-    }
-
-    public void startGame() {
-        gameStarted = true;
-
-        pauseButton = new Button(sketch, "Pause", height / 60, width - width / 8, -panelHeight, width / 8, panelHeight);
-        pauseButton.setAction(this::togglePause);
-
-        reset.setActive(true);
-        next.setActive(true);
-        prev.setActive(true);
-        //editor.setActive(true);
-
-        resetLevel();
     }
 
     private void prevLevel() {
@@ -156,9 +99,11 @@ public class LevelScene extends Scene {
     private void resetLevel() {
         File f = new File(levelPath + "levels/level" + level + ".map");
         if (f.exists() && !f.isDirectory()) {
-            MapFromFile file = new MapFromFile(levelPath + "levels/level" + level + ".map", width, height);
+            MapFromFile file = new MapFromFile(levelPath + "levels/level" + level + ".map", width, height - panelHeight);
             game = file.generate();
             game.setAll(sketch);
+            setTitle("InkBall - level " + (level+1));
+            System.out.println("loaded level " + (level + 1));
 //            sketch.surface.setTitle("Ink Ball - Level " + (level + 1));
         } else if (level < 0) {
             while (level != 0) level++;
@@ -168,7 +113,64 @@ public class LevelScene extends Scene {
     }
 
     private void endGame() {
-        System.exit(0);
+        sketch.frameRate(config.fps);
+//        swap.swap(Test.SceneType.MENU);
+        manager.swapScenes(SceneManager.SceneType.MENU);
+    }
+
+    @Override
+    public void init() {
+
+        levelPath = manager.getAbsolutePathToGame();
+//        System.out.println(levelPath + " level path <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+
+//        resetLevel();
+
+//        File f = new File(levelPath + "levels/level" + level + ".map");
+//
+//        if (f.exists()) {
+//            MapFromFile file = new MapFromFile(levelPath + "levels/level" + level + ".map", width, height - panelHeight);
+//            System.out.println("loaded level 1");
+//
+//            game = file.generate();
+//            game.setAll(sketch);
+//        }
+
+        manager.fps(config.fps);
+
+        pauseButton = new Button(sketch, "Quit", config.textSize / 2, width / 4, height / 5 * 3, width / 2, height / 10);
+        pauseButton.setAction(this::endGame);
+
+        reset = new Button(sketch, "Restart", config.textSize / 2, width - (width / 8 * 2), -panelHeight, width / 8, panelHeight);
+        reset.setAction(this::resetLevel);
+        reset.setActive(false);
+
+        next = new Button(sketch, "Next level", config.textSize / 2, width - (width / 8 * 3), -panelHeight, width / 8, panelHeight);
+        next.setAction(this::nextLevel);
+        next.setActive(false);
+
+        prev = new Button(sketch, "Previous level", config.textSize / 2, width - (width / 8 * 4), -panelHeight, width / 8, panelHeight);
+        prev.setAction(this::prevLevel);
+        prev.setActive(false);
+
+        quitPause = new Button(sketch, "Quit to main menu", config.textSize, width / 4, (int) (height / 5 * 2.5), width / 2, height / 10);
+        quitPause.setAction(this::endGame);
+        quitPause.setActive(false);
+
+        resumePause = new Button(sketch, "Resume", config.textSize, width / 4, (int) (height / 5 * 1.5), width / 2, height / 10);
+        resumePause.setAction(this::togglePause);
+        resumePause.setActive(false);
+
+        gameStarted = true;
+        pauseButton = new Button(sketch, "Pause", config.textSize / 2, width - width / 8, -panelHeight, width / 8, panelHeight);
+        pauseButton.setAction(this::togglePause);
+
+        pauseButton.setActive(true);
+        reset.setActive(true);
+        next.setActive(true);
+        prev.setActive(true);
+
+        resetLevel();
     }
 
     @Override
